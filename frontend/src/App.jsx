@@ -5,6 +5,7 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Login from "./auth/login";
 import Register from "./auth/register";
+import RoadmapGenerator from "./AA/roadmapGenerator";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<h1>Home</h1>} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/roadmap" element={<RoadmapGenerator />} />
       </Routes>
     </>
   );
