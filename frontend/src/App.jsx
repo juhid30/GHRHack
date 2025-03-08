@@ -6,6 +6,8 @@ import RoadmapGenerator from "./components/AA/roadmapGenerator";
 import Quiz from "./components/Quiz";
 import CommunityForum from "./components/CommunityForum";
 import Journal from "./components/Journal";
+import VideoPlayer from "./components/VideoPlayer";
+import ResumeViewer from "./components/ResumeViewer";
 import Calendar from "./components/Calendar";
 import Dashboard from "./components/Dashboard";
 import CodingPlatform from "./components/CodingPlatform";
