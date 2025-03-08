@@ -12,6 +12,7 @@ import Journal from "./components/Journal";
 import Calendar from "./components/Calendar";
 import Dashboard from "./components/Dashboard";
 import CodingPlatform from "./components/CodingPlatform";
+import InterestAnalyzer from "./components/InterestAnalyzer";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -29,6 +30,8 @@ function App() {
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/coding" element={<CodingPlatform />} />
         <Route path="/roadmap" element={<RoadmapGenerator />} />
+        <Route path="/serp" element={<InterestAnalyzer />} />
+        
       </Routes>
     </>
   );

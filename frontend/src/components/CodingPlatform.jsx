@@ -4,7 +4,7 @@ import CodeEditor from "./CodeEditor/CodeEditor";
 const CodingPlatform = () => {
   return (
     <>
-      <div className="h-[100vh] w-[100%] bg-slate-700">
+      <div className="h-[100vh] w-[100%] bg-gray-100">
         {/* <Navbar /> */}
         <div className="flex h-[90%]">
           <div className="p-8 flex flex-col ">{/* <Sidebar /> */}</div>

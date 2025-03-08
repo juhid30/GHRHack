@@ -3,6 +3,8 @@ from flask_cors import CORS
 import PyPDF2
 import os
 import google.generativeai as genai
+from serpapi import GoogleSearch
+
 
 app = Flask(__name__)
 CORS(app)
@@ -124,5 +126,38 @@ def generate_roadmap():
     finally:
         os.remove(file_path)  # Clean up uploaded file
 
+
+@app.route('/search', methods=['POST'])
+def search():
+    
+    data = request.json
+    if not data or 'query' not in data:
+      return jsonify({"error": "QUERY is required"}), 400
+    
+
+
+    params = {
+        "api_key": "23977470ad4340988d1005304ee112e87ab79ec98d8daf427cd7b88214493b52",
+        "engine": "google",
+        "q": data['query'],
+        "location": "India",
+        "google_domain": "google.com",
+        "gl": "us",
+        "hl": "en"
+    }
+
+    search = GoogleSearch(params)
+    results = search.get_dict()
+
+    return jsonify(results)
+
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
+
+
+
+
+
+a
