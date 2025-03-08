@@ -5,7 +5,7 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Login from "./auth/login";
 import Register from "./auth/register";
-import RoadmapGenerator from "./AA/roadmapGenerator";
+import RoadmapGenerator from "./components/AA/roadmapGenerator";
 import Quiz from "./components/Quiz";
 import CommunityForum from "./components/CommunityForum";
 import Journal from "./components/Journal";

@@ -1,0 +1,67 @@
+{
+  "name": "Second Year B.E. IT Engineering",
+  "children": [
+    {
+      "name": "Semester III",
+      "children": [
+        {
+          "name": "Phase 1: Weeks 1-4 (Foundation)",
+          "children": [
+            {
+              "name": "ITC401 (Engineering Mathematics IV)",
+              "attributes": {
+                "focus": "Linear Algebra",
+                "resources": "NPTEL"
+              }
+            },
+            {
+              "name": "ITC402 (Computer Networks and Network Design)",
+              "attributes": {
+                "focus": "Introduction to Computer Networks"
+              }
+            },
+            {
+              "name": "ITC403 (Operating Systems)",
+              "attributes": {
+                "focus": "Fundamentals of Operating Systems"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Phase 2: Weeks 5-8 (Core Concepts)",
+          "children": [
+            {
+              "name": "ITC401 (Engineering Mathematics IV)",
+              "attributes": {
+                "focus": "Complex Integration and Z-Transform"
+              }
+            },
+            {
+              "name": "ITC402 (Computer Networks and Network Design)",
+              "attributes": {
+                "focus": "Network Layer"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Semester IV",
+      "children": [
+        {
+          "name": "Phase 1: Weeks 14-17 (Mini-Project & Revision)",
+          "children": [
+            {
+              "name": "Mini-Project 1B",
+              "attributes": {
+                "description": "Python-based automation project"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
