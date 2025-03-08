@@ -10,8 +10,6 @@ const VideoPlayer = () => {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [prediction, setPrediction] = useState(null);
-  const [fileUrl, setFileUrl] = useState(null);
   const [confidenceLevel, setConfidenceLevel] = useState(0);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [audioChunks, setAudioChunks] = useState([]);
@@ -38,19 +36,17 @@ const VideoPlayer = () => {
 
   const startWebcam = async () => {
     try {
-      // Get only the video stream, no audio
       const videoStream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: false, // Disable audio
+        audio: false,
       });
 
       if (webcamRef.current) {
         webcamRef.current.srcObject = videoStream;
       }
 
-      // Now get a separate stream for audio only
       const audioStream = await navigator.mediaDevices.getUserMedia({
-        audio: true, // Only audio
+        audio: true,
       });
 
       const recorder = new MediaRecorder(audioStream);
@@ -72,7 +68,6 @@ const VideoPlayer = () => {
       mediaRecorder.stop();
       mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
-        await sendRecording(audioBlob);
         await saveRecordingLocally(audioBlob);
         setAudioChunks([]);
       };
@@ -84,95 +79,119 @@ const VideoPlayer = () => {
     handleStart();
   };
 
-  const sendRecording = async (audioBlob) => {
-    const formData = new FormData();
-    formData.append("file", audioBlob, "recording.wav");
-  };
-
   const saveRecordingLocally = async (audioBlob) => {
     const file = new File([audioBlob], "recording.wav", { type: "audio/wav" });
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/save-audio",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      setFileUrl(response.data.fileUrl);
+      await axios.post("http://localhost:5000/save-audio", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
     } catch (error) {
       console.error("Error saving recording:", error);
     }
   };
-
   return (
-    <div className="flex flex-col items-center justify-center h-screen w-full bg-gradient-to-r from-purple-400 to-purple-600 p-4">
-      <h2 className="text-4xl font-extrabold text-white mb-8">HR Simulator</h2>
+    <div className="container mx-auto px-4 py-8 min-h-screen">
+      {/* Header */}
+      <h2 className="text-4xl md:text-5xl font-extrabold text-center mb-6">
+        HR Simulator 🚀
+      </h2>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-2xl font-semibold text-center">
-              Ready to start the video?
-            </h2>
-            <button
-              className="mt-6 w-full px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-500 transition duration-300"
-              onClick={handleStart}
-            >
-              Start
-            </button>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto">
+        {/* Modal */}
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
+            <div className="bg-white p-8 md:p-12 rounded-2xl shadow-2xl max-w-md w-full mx-4 border border-purple-500/30">
+              <h2 className="text-2xl md:text-3xl font-bold text-purple text-center mb-6">
+                Ready to start your interview?
+              </h2>
+              <button
+                className="w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-blue-500 border-4 font-semibold rounded-xl hover:scale-105 transition-all duration-300 shadow-lg"
+                onClick={handleStart}
+              >
+                Start Interview 🎤
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {isPlaying && (
-        <div className="flex w-full max-w-6xl p-2 rounded-lg shadow-xl space-x-4">
-          <div className="flex-1">
-            <video
-              key={currentVideoIndex}
-              src={videos[currentVideoIndex]}
-              className="rounded-lg w-full h-80"
-              autoPlay
-            />
-          </div>
-          <div className="flex-1">
-            <video
-              ref={webcamRef}
-              className="rounded-lg w-full h-80"
-              autoPlay
-              playsInline
-            />
-          </div>
-        </div>
-      )}
+        {/* Video Interface */}
+        {isPlaying && (
+          <div className="space-y-2">
+            {/* Video Grid */}
+            <div className="grid md:grid-cols-2  gap-6">
+              {/* AI Interview Video */}
+              <div className="rounded-xl overflow-hidden shadow-2xl ">
+                <div className="p-2 bg-mint/30">
+                  <h3 className="text-lg  font-semibold text-purple-400">
+                    AI Interviewer
+                  </h3>
+                </div>
+                <video
+                  key={currentVideoIndex}
+                  src={videos[currentVideoIndex]}
+                  className="w-full aspect-video object-contain"
+                  autoPlay
+                />
+              </div>
 
-      <div className="mt-6">
-        <Speedometer
-          minValue={0}
-          maxValue={5}
-          value={confidenceLevel}
-          needleColor="black"
-          segments={5}
-          segmentColors={["red", "orange", "yellow", "lightgreen", "green"]}
-          needleTransitionDuration={400}
-          needleTransition="easeElastic"
-          textColor="transparent"
-          height={100}
-          width={220}
-        />
+              {/* Webcam Feed */}
+              <div className=" rounded-xl overflow-hidden shadow-2xl border">
+                <div className="p-2 border-b bg-mint/30">
+                  <h3 className="text-lg font-semibold">Your Camera</h3>
+                </div>
+                <video
+                  ref={webcamRef}
+                  className="w-full aspect-video object-contain bg"
+                  autoPlay
+                  playsInline
+                />
+              </div>
+            </div>
+            <div className="w-[100%] flex items-center justify-center">
+              {/* Controls Section */}
+              <div className="grid md:grid-cols-2 w-[50%] gap-6 justify-center items-center">
+                {/* Speedometer */}
+                <div className="bg-mint/20 rounded-xl p-6 shadow-2xl border border-cyan-500/30">
+                  <Speedometer
+                    minValue={0}
+                    maxValue={5}
+                    value={confidenceLevel}
+                    needleColor="cyan"
+                    segments={5}
+                    segmentColors={[
+                      "#ff4b4b",
+                      "#ff914d",
+                      "#ffcc00",
+                      "#52c41a",
+                      "#00ff00",
+                    ]}
+                    needleTransitionDuration={400}
+                    needleTransition="easeElastic"
+                    textColor="white"
+                    height={140}
+                    width={260}
+                  />
+                  <p className="text-center text-cyan-400 text-sm mt-4 font-medium">
+                    Confidence Level 📊
+                  </p>
+                </div>
+
+                {/* Next Button */}
+                <button
+                  className="h-16 px-8 font-semibold rounded-xl hover:scale-105 bg-mint/10 transition-all duration-300 shadow-lg"
+                  onClick={handleNext}
+                >
+                  Next Question 🎬
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-
-      <button
-        className="mt-6 w-full max-w-xs px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-500 transition duration-300"
-        onClick={handleNext}
-      >
-        Next
-      </button>
-
-      {/* Prediction and saved audio file sections can be uncommented if needed */}
     </div>
   );
 };
