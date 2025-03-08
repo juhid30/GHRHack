@@ -5,10 +5,11 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Login from "./auth/login";
 import Register from "./auth/register";
-import RoadmapGenerator from "./AA/roadmapGenerator";
-import EmotionDetector from "./components/Emotion/EmotionDetector";
-import SpotifyPlayer from "./components/SpotifyPlayer";
-import Dashboard from "./components/Dashboard";
+import RoadmapGenerator from "./components/AA/roadmapGenerator";
+import Quiz from "./components/Quiz";
+import CommunityForum from "./components/CommunityForum";
+import Journal from "./components/Journal";
+import Calendar from "./components/Calendar";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -20,9 +21,13 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/roadmap" element={<RoadmapGenerator />} />
-        <Route path="/emotion" element={<EmotionDetector />} />
-        <Route path="/song" element={<SpotifyPlayer />} />
+        {/* <Route path="/roadmap" element={<RoadmapGenerator />} /> */}
+        <Route path="/quiz" element={<Quiz />} />
+        <Route path="/journal" element={<Journal />} />
+        <Route path="/community" element={<CommunityForum />} />
+        <Route path="/calendar" element={<Calendar />} />
+        
+
       </Routes>
     </>
   );
