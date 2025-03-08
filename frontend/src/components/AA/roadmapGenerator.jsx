@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
-import Tree from "react-d3-tree";
+import * as THREE from "three";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader"; // Correct import for FontLoader
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry"; // Import TextGeometry
 
 export default function RoadmapGenerator() {
   const [formData, setFormData] = useState({
@@ -17,14 +19,152 @@ export default function RoadmapGenerator() {
     height: 500,
   });
 
+  const [font, setFont] = useState(null); // State to store the loaded font
+
   useEffect(() => {
-    if (treeContainerRef.current) {
-      setTreeDimensions({
-        width: treeContainerRef.current.offsetWidth,
-        height: 600,
+    // Load the font asynchronously and store it in the state
+    const loader = new FontLoader();
+    loader.load(
+      "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json", // Updated font URL
+      (loadedFont) => {
+        setFont(loadedFont); // Store the font in the state once it's loaded
+      },
+      undefined,
+      (error) => {
+        console.error("Error loading font:", error);
+      }
+    );
+  }, []);
+
+  useEffect(() => {
+    if (roadmap && font) {
+      // Initialize the 3D scene
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        treeDimensions.width / treeDimensions.height,
+        0.1,
+        1000
+      );
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(treeDimensions.width, treeDimensions.height);
+      treeContainerRef.current.appendChild(renderer.domElement);
+
+      const light = new THREE.AmbientLight(0xffffff); // Ambient light
+      scene.add(light);
+
+      const light2 = new THREE.PointLight(0xffffff, 1, 500);
+      light2.position.set(0, 0, 500);
+      scene.add(light2);
+
+      camera.position.z = 500;
+
+      buildTree(roadmap, scene, null, font); // Pass the loaded font to the tree building function
+
+      // Animation loop
+      const animate = () => {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+      };
+
+      animate();
+    }
+  }, [roadmap, treeDimensions, font]); // Run this effect when roadmap or font changes
+
+  const buildTree = (
+    data,
+    scene,
+    parent,
+    font,
+    level = 0,
+    xOffset = 0,
+    yOffset = 0
+  ) => {
+    const distance = 100; // Distance between nodes
+
+    // If data is an array, iterate through the array
+    if (Array.isArray(data)) {
+      data.forEach((node, index) => {
+        createNode(
+          node,
+          scene,
+          parent,
+          font,
+          level,
+          xOffset,
+          yOffset,
+          distance
+        );
       });
     }
-  }, [roadmap]);
+    // If data is a single object (like the root node), create the root node
+    else if (data && data.name) {
+      createNode(data, scene, parent, font, level, xOffset, yOffset, distance);
+    }
+  };
+
+  const createNode = (
+    node,
+    scene,
+    parent,
+    font,
+    level,
+    xOffset,
+    yOffset,
+    distance
+  ) => {
+    const material = new THREE.MeshBasicMaterial({
+      color: node.children ? 0x1d4ed8 : 0x22c55e,
+    });
+    const geometry = new THREE.SphereGeometry(15);
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(xOffset, yOffset, 0);
+    scene.add(mesh);
+
+    // Create a text label for the node, only if the font is available
+    if (font) {
+      const textGeometry = new TextGeometry(node.name, {
+        // Use TextGeometry correctly here
+        font: font,
+        size: 10,
+        height: 1,
+      });
+      const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+      const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+      textMesh.position.set(xOffset + 20, yOffset, 0);
+      scene.add(textMesh);
+    }
+
+    // Add interaction to animate on click
+    mesh.onClick = () => {
+      mesh.scale.set(1.5, 1.5, 1.5); // Scale up on click for animation
+      setTimeout(() => {
+        mesh.scale.set(1, 1, 1); // Scale back down after animation
+      }, 300);
+    };
+
+    // If the node has children, create the child nodes recursively
+    if (node.children) {
+      buildTree(
+        node.children,
+        scene,
+        mesh,
+        font,
+        level + 1,
+        xOffset - distance,
+        yOffset + distance
+      );
+      buildTree(
+        node.children,
+        scene,
+        mesh,
+        font,
+        level + 1,
+        xOffset + distance,
+        yOffset + distance
+      );
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -67,37 +207,6 @@ export default function RoadmapGenerator() {
     }
     setLoading(false);
   };
-
-  const renderCustomNode = ({ nodeDatum, toggleNode }) => (
-    <g>
-      <circle
-        r={15}
-        fill={nodeDatum.children ? "#1D4ED8" : "#22C55E"}
-        onClick={toggleNode}
-      />
-      <text x={20} dy={5} fontSize={14} fontWeight="">
-        {nodeDatum.name}
-      </text>
-      {nodeDatum.attributes && (
-        <foreignObject width="200" height="60" x={25} y={10}>
-          <div
-            style={{
-              background: "#F1F5F9",
-              padding: "5px",
-              borderRadius: "5px",
-              fontSize: "12px",
-            }}
-          >
-            {Object.entries(nodeDatum.attributes).map(([key, value]) => (
-              <div key={key}>
-                <strong>{key}:</strong> {value}
-              </div>
-            ))}
-          </div>
-        </foreignObject>
-      )}
-    </g>
-  );
 
   return (
     <div className="max-w-[1000px] mx-auto p-6 space-y-6">
@@ -142,16 +251,7 @@ export default function RoadmapGenerator() {
           <div
             ref={treeContainerRef}
             style={{ width: "100%", height: "600px" }}
-          >
-            <Tree
-              data={roadmap}
-              orientation="vertical"
-              translate={{ x: treeDimensions.width / 2, y: 100 }}
-              renderCustomNodeElement={renderCustomNode}
-              nodeSize={{ x: 200, y: 150 }}
-              separation={{ siblings: 1, nonSiblings: 2 }}
-            />
-          </div>
+          />
         </div>
       )}
     </div>

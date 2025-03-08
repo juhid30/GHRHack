@@ -9,7 +9,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-import time
+from urllib.robotparser import RobotFileParser
 
 app = Flask(__name__)
 CORS(app)
@@ -198,10 +198,21 @@ def get_events():
     
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0"
 }
 
+
+def can_scrape_naukri():
+    robots_url = "https://www.naukri.com/robots.txt"
+    rp = RobotFileParser()
+    rp.set_url(robots_url)
+    rp.read()
+    return rp.can_fetch("*", "https://www.naukri.com/jobs")
+
 def scrape_naukri_bs4(job_title, location="india", max_jobs=10):
+    if not can_scrape_naukri():
+        return {"error": "Scraping Naukri is disallowed by robots.txt"}
+
     job_title = job_title.replace(" ", "-")
     location = location.replace(" ", "-")
 
@@ -243,31 +254,29 @@ def get_jobs():
     data = request.json
     print(data)
 
-    genai.configure(api_key="AIzaSyBcox681xg8Y7ty5v8uUtOT7nV_tE-g8K8")
+    # genai.configure(api_key="AIzaSyBcox681xg8Y7ty5v8uUtOT7nV_tE-g8K8")
 
-    model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+    # model = genai.GenerativeModel(model_name="gemini-1.5-flash")
 
-    prompt = (f"Give me jobs of the following jobs: {data}.\nI just want json data nothing else as response.")
+    # prompt = (f"Give me jobs of the following jobs: {data}.\nI just want json data nothing else as response.")
 
-    response = model.generate_content(prompt)
+    # response = model.generate_content(prompt)
 
-    return jsonify({"jobs": response.text.strip()})  # Adjust based on response
+    # return jsonify({"jobs": response.text.strip()})  # Adjust based on response
 
+    if isinstance(data, list):  
+        job_titles = data
+    elif isinstance(data, dict):
+        job_titles = data.get("posts", [])
+    else:
+        return jsonify({"error": "Invalid request format"}), 400
+
+    all_jobs = {}
     
+    for job_title in job_titles:
+        all_jobs[job_title] = scrape_naukri_bs4(job_title)
 
-    # if isinstance(data, list):  
-    #     job_titles = data
-    # elif isinstance(data, dict):
-    #     job_titles = data.get("posts", [])
-    # else:
-    #     return jsonify({"error": "Invalid request format"}), 400
-
-    # all_jobs = {}
-    
-    # for job_title in job_titles:
-    #     all_jobs[job_title] = scrape_naukri_bs4(job_title)
-
-    # return jsonify({"jobs": all_jobs})
+    return jsonify({"jobs": all_jobs})
 
     
     

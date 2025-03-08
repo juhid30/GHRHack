@@ -73,24 +73,24 @@ const CodeEditor = () => {
       <div className="flex gap-4 mb-4">
         <button
           onClick={() => handleModeClick("DSA")}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          className="px-4 py-2 bg-[#55D6BE] text-white rounded-md hover:bg-[#47c1a2]" // Light color button
         >
           DSA Mode
         </button>
         <button
           onClick={() => handleModeClick("Debug")}
-          className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+          className="px-4 py-2 bg-[#FC6471] text-white rounded-md hover:bg-[#f05458]" // Light color button
         >
           Debug Mode
         </button>
         <LanguageSelector language={language} onSelect={onSelect} />
       </div>
       <div className="flex gap-4">
-        <div className="w-1/2">
+        <div className="w-1/2 border border-gray-400 rounded-md">
           <Editor
             options={{ minimap: { enabled: false } }}
             height="70vh"
-            theme="vs-dark"
+            theme="vs-light" // Light theme for the Monaco editor
             language={language}
             onMount={onMount}
             value={value}
@@ -107,7 +107,7 @@ const CodeEditor = () => {
           {isDebugMode && showNextButton && (
             <button
               onClick={handleNextClick}
-              className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+              className="mt-4 px-4 py-2 bg-[#7D5BA6] text-white rounded-md hover:bg-[#6a4c8c]" // Light color button
             >
               Next
             </button>
