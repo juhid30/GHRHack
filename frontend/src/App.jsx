@@ -9,6 +9,8 @@ import Journal from "./components/Journal";
 import Calendar from "./components/Calendar";
 import Dashboard from "./components/Dashboard";
 import CodingPlatform from "./components/CodingPlatform";
+import VideoPlayer from "./components/VideoPlayer";
+import ResumeViewer from "./components/ResumeViewer";
 
 function App() {
   return (
