@@ -48,19 +48,15 @@ export function CalendarComponent() {
       console.log("Raw response data:", data);
 
       let prasedData = data.events;
-
       prasedData = prasedData.replace(/```json|```/g, "").trim();
-
       console.log("Raw response data after parsing:", prasedData);
 
       localStorage.setItem("rawEvents", prasedData);
 
-      window.location.reload();
-
-      // Convert to FullCalendar's required format
-
-      setEvents(prasedData);
-      localStorage.setItem("events", JSON.stringify(prasedData));
+      // Parse the events string to JSON
+      const parsedEvents = JSON.parse(prasedData);
+      setEvents(parsedEvents);
+      localStorage.setItem("events", JSON.stringify(parsedEvents));
       setShowPopup(false);
     } catch (error) {
       console.error("Error fetching events:", error);
