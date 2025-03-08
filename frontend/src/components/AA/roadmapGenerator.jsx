@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import Tree from "react-d3-tree";
@@ -11,6 +11,20 @@ export default function RoadmapGenerator() {
   });
   const [roadmap, setRoadmap] = useState(null);
   const [loading, setLoading] = useState(false);
+  const treeContainerRef = useRef(null);
+  const [treeDimensions, setTreeDimensions] = useState({
+    width: 800,
+    height: 500,
+  });
+
+  useEffect(() => {
+    if (treeContainerRef.current) {
+      setTreeDimensions({
+        width: treeContainerRef.current.offsetWidth,
+        height: 600,
+      });
+    }
+  }, [roadmap]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,58 +45,62 @@ export default function RoadmapGenerator() {
       const response = await axios.post(
         "http://localhost:5000/generate-roadmap",
         formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
-      const cleanedRoadmap = cleanRoadmapJSON(response.data.roadmap);
-      setRoadmap(cleanedRoadmap);
-      console.log(cleanedRoadmap);
+
+      let roadmapData = response.data.roadmap;
+
+      // Debug: Print raw response
+      console.log("Raw API Response:", roadmapData);
+
+      // Remove unwanted Markdown formatting if present
+      roadmapData = roadmapData.replace(/```json|```/g, "").trim();
+
+      // Ensure valid JSON format
+      if (typeof roadmapData === "string") {
+        roadmapData = JSON.parse(roadmapData);
+      }
+
+      setRoadmap(roadmapData);
     } catch (error) {
       console.error("Error generating roadmap", error);
     }
     setLoading(false);
   };
 
-  const cleanRoadmapJSON = (roadmapData) => {
-    // Implement the JSON cleaning logic here
-    // For example, remove unwanted properties or sanitize the data
-    return roadmapData; // Return the cleaned JSON
-  };
-
-  const convertToTreeData = (text) => {
-    const lines = text.split("\n").filter((line) => line.trim() !== "");
-    const root = { name: "Roadmap", children: [] };
-    let currentParent = root;
-
-    lines.forEach((line) => {
-      const trimmedLine = line.trim();
-      const depth = line.search(/\S/);
-
-      const newNode = { name: trimmedLine, children: [] };
-
-      if (depth === 0) {
-        root.children.push(newNode);
-        currentParent = newNode;
-      } else {
-        let parent = currentParent;
-        while (parent.depth >= depth) {
-          parent = parent.parent;
-        }
-        parent.children.push(newNode);
-        newNode.parent = parent;
-        newNode.depth = depth;
-        currentParent = newNode;
-      }
-    });
-
-    return root;
-  };
+  const renderCustomNode = ({ nodeDatum, toggleNode }) => (
+    <g>
+      <circle
+        r={15}
+        fill={nodeDatum.children ? "#1D4ED8" : "#22C55E"}
+        onClick={toggleNode}
+      />
+      <text x={20} dy={5} fontSize={14} fontWeight="">
+        {nodeDatum.name}
+      </text>
+      {nodeDatum.attributes && (
+        <foreignObject width="200" height="60" x={25} y={10}>
+          <div
+            style={{
+              background: "#F1F5F9",
+              padding: "5px",
+              borderRadius: "5px",
+              fontSize: "12px",
+            }}
+          >
+            {Object.entries(nodeDatum.attributes).map(([key, value]) => (
+              <div key={key}>
+                <strong>{key}:</strong> {value}
+              </div>
+            ))}
+          </div>
+        </foreignObject>
+      )}
+    </g>
+  );
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6">
+    <div className="max-w-[1000px] mx-auto p-6 space-y-6">
       <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
         <h2 className="text-2xl font-bold mb-4">Roadmap Generator</h2>
         <div className="space-y-4">
@@ -121,8 +139,18 @@ export default function RoadmapGenerator() {
       {roadmap && (
         <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
           <h2 className="text-xl font-semibold mb-4">Generated Roadmap</h2>
-          <div id="treeWrapper" style={{ width: "100%", height: "500px" }}>
-            <Tree data={convertToTreeData(roadmap)} orientation="vertical" />
+          <div
+            ref={treeContainerRef}
+            style={{ width: "100%", height: "600px" }}
+          >
+            <Tree
+              data={roadmap}
+              orientation="vertical"
+              translate={{ x: treeDimensions.width / 2, y: 100 }}
+              renderCustomNodeElement={renderCustomNode}
+              nodeSize={{ x: 200, y: 150 }}
+              separation={{ siblings: 1, nonSiblings: 2 }}
+            />
           </div>
         </div>
       )}

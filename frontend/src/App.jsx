@@ -23,8 +23,7 @@ function App() {
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/journal" element={<Journal />} />
         <Route path="/community" element={<CommunityForum />} />
-        
-
+        <Route path="/roadmap" element={<RoadmapGenerator />} />
       </Routes>
     </>
   );
