@@ -13,6 +13,7 @@ import Calendar from "./components/Calendar";
 import Dashboard from "./components/Dashboard";
 import CodingPlatform from "./components/CodingPlatform";
 import VideoPlayer from "./components/VideoPlayer";
+import ResumeViewer from "./components/ResumeViewer";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -27,6 +28,7 @@ function App() {
         <Route path="/public-speaking" element={<VideoPlayer />} />
         {/* <Route path="/emotion" element={<EmotionDetector />} /> */}
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/resume" element={<ResumeViewer />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/journal" element={<Journal />} />
         <Route path="/community" element={<CommunityForum />} />
