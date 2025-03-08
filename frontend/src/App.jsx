@@ -5,7 +5,7 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Login from "./auth/login";
 import Register from "./auth/register";
-import RoadmapGenerator from "./AA/roadmapGenerator";
+import RoadmapGenerator from "./components/AA/roadmapGenerator";
 
 function App() {
   const [count, setCount] = useState(0);

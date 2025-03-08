@@ -1,14 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import Tree from "react-d3-tree";
 
 export default function RoadmapGenerator() {
   const [formData, setFormData] = useState({
     year: "",
-    branch: "",
-    notes: "",
     university: "",
-    syllabus: "",
+    syllabus: null,
   });
   const [roadmap, setRoadmap] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -17,18 +16,69 @@ export default function RoadmapGenerator() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, syllabus: e.target.files[0] });
+  };
+
   const generateRoadmap = async () => {
     setLoading(true);
+    const formDataToSend = new FormData();
+    formDataToSend.append("year", formData.year);
+    formDataToSend.append("university", formData.university);
+    formDataToSend.append("syllabus", formData.syllabus);
+
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/api/generate-roadmap",
-        formData
+        "http://localhost:5000/generate-roadmap",
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
-      setRoadmap(response.data);
+      const cleanedRoadmap = cleanRoadmapJSON(response.data.roadmap);
+      setRoadmap(cleanedRoadmap);
+      console.log(cleanedRoadmap);
     } catch (error) {
       console.error("Error generating roadmap", error);
     }
     setLoading(false);
+  };
+
+  const cleanRoadmapJSON = (roadmapData) => {
+    // Implement the JSON cleaning logic here
+    // For example, remove unwanted properties or sanitize the data
+    return roadmapData; // Return the cleaned JSON
+  };
+
+  const convertToTreeData = (text) => {
+    const lines = text.split("\n").filter((line) => line.trim() !== "");
+    const root = { name: "Roadmap", children: [] };
+    let currentParent = root;
+
+    lines.forEach((line) => {
+      const trimmedLine = line.trim();
+      const depth = line.search(/\S/);
+
+      const newNode = { name: trimmedLine, children: [] };
+
+      if (depth === 0) {
+        root.children.push(newNode);
+        currentParent = newNode;
+      } else {
+        let parent = currentParent;
+        while (parent.depth >= depth) {
+          parent = parent.parent;
+        }
+        parent.children.push(newNode);
+        newNode.parent = parent;
+        newNode.depth = depth;
+        currentParent = newNode;
+      }
+    });
+
+    return root;
   };
 
   return (
@@ -43,27 +93,15 @@ export default function RoadmapGenerator() {
             className="w-full p-2 border rounded-md"
           />
           <input
-            name="branch"
-            placeholder="Branch"
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-          />
-          <input
-            name="notes"
-            placeholder="Notes"
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-          />
-          <input
             name="university"
             placeholder="University"
             onChange={handleChange}
             className="w-full p-2 border rounded-md"
           />
           <input
+            type="file"
             name="syllabus"
-            placeholder="Syllabus"
-            onChange={handleChange}
+            onChange={handleFileChange}
             className="w-full p-2 border rounded-md"
           />
           <button
@@ -83,9 +121,9 @@ export default function RoadmapGenerator() {
       {roadmap && (
         <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
           <h2 className="text-xl font-semibold mb-4">Generated Roadmap</h2>
-          <pre className="whitespace-pre-wrap bg-gray-100 p-4 rounded-md text-sm">
-            {JSON.stringify(roadmap, null, 2)}
-          </pre>
+          <div id="treeWrapper" style={{ width: "100%", height: "500px" }}>
+            <Tree data={convertToTreeData(roadmap)} orientation="vertical" />
+          </div>
         </div>
       )}
     </div>
