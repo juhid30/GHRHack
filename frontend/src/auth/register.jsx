@@ -96,44 +96,59 @@ export default function Register() {
   return (
     <div className="flex mx-auto min-h-[100vh] flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
+        <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-[#7D5BA6]">
           Create an account
         </h2>
+        <p className="text-center text-[#FC6471]">
+          Fill in your details to register for a new account
+        </p>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      <div className="mt-10 sm:mx-auto shadow-lg shadow-[#7D5BA6] rounded-lg p-4 sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            required
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            required
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
-          <input
-            type="file"
-            name="profilePic"
-            accept="image/*"
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
+          <div className="flex items-center px-2 border rounded  justify-between">
+            <Pen size={20} className="mr-2" />
+            <input
+              type="text"
+              name="name"
+              placeholder="Full Name"
+              required
+              onChange={handleChange}
+              className="w-full p-2 "
+            />
+          </div>
+          <div className="flex items-center px-2 border rounded  justify-between">
+            <FileText size={20} className="mr-2" />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              required
+              onChange={handleChange}
+              className="w-full p-2 "
+            />
+          </div>
+          <div className="flex items-center px-2 border rounded  justify-between">
+            <User size={20} className="mr-2" />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+              onChange={handleChange}
+              className="w-full p-2 "
+            />
+          </div>
+          <div className="flex items-center px-2 border rounded  justify-between">
+            <Pen size={20} className="mr-2" />
+            <input
+              type="file"
+              name="profilePic"
+              accept="image/*"
+              onChange={handleChange}
+              className="w-full p-2 "
+            />
+          </div>
           {localFiles.profilePic && (
             <img
               src={localFiles.profilePic}
@@ -141,37 +156,46 @@ export default function Register() {
               className="w-20 h-20 mt-2 rounded"
             />
           )}
-          <input
-            type="file"
-            name="resume"
-            accept="application/pdf"
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
+          <div className="flex items-center px-2 border rounded  justify-between">
+            <FileText size={20} className="mr-2" />
+            <input
+              type="file"
+              name="resume"
+              accept="application/pdf"
+              onChange={handleChange}
+              className="w-full p-2 "
+            />
+          </div>
           {localFiles.resume && (
             <p className="mt-2 text-sm text-gray-600">
               Resume uploaded: {formData.resume}
             </p>
           )}
-          <input
-            type="text"
-            name="knows"
-            placeholder="What do you know? (e.g. React, Node.js)"
-            required
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
-          <input
-            type="text"
-            name="wantsToBe"
-            placeholder="What do you want to be? (e.g. Full Stack Developer)"
-            required
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
+          <div className="flex items-center px-2 border rounded  justify-between">
+            <Pen size={20} className="mr-2" />
+            <input
+              type="text"
+              name="knows"
+              placeholder="What do you know? (e.g. React, Node.js)"
+              required
+              onChange={handleChange}
+              className="w-full p-2 "
+            />
+          </div>
+          <div className="flex items-center px-2 border rounded  justify-between">
+            <Pen size={20} className="mr-2" />
+            <input
+              type="text"
+              name="wantsToBe"
+              placeholder="What do you want to be? (e.g. Full Stack Developer)"
+              required
+              onChange={handleChange}
+              className="w-full p-2 "
+            />
+          </div>
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white p-2 rounded"
+            className="w-full bg-[#55D6BE] text-white p-2 rounded"
           >
             Register
           </button>
