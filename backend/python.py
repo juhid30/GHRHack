@@ -1,3 +1,4 @@
+import os
 import cv2
 import numpy as np
 import pandas as pd
@@ -5,6 +6,10 @@ import requests
 from flask import Flask, request, jsonify
 from deepface import DeepFace
 from flask_cors import CORS  # Enable CORS
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -15,8 +20,8 @@ CORS(app)
 data = pd.read_csv("songs.csv").dropna()
 
 # Spotify API Credentials
-SPOTIFY_CLIENT_ID = "7735f30fc4e64582bf33099b52b0ffd9"
-SPOTIFY_CLIENT_SECRET = "8c2a99e059d8415592aeb4ec1fd11d9a"
+SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
+SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
 
 # Function to get a Spotify access token
 def get_spotify_access_token():

@@ -12,6 +12,7 @@ import Journal from "./components/Journal";
 import Calendar from "./components/Calendar";
 import Dashboard from "./components/Dashboard";
 import CodingPlatform from "./components/CodingPlatform";
+import VideoPlayer from "./components/VideoPlayer";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -21,11 +22,10 @@ function App() {
       <Routes>
         <Route path="/" element={<h1>Home</h1>} />
         <Route path="/login" element={<Login />} />
-
         <Route path="/register" element={<Register />} />
-        <Route path="/yoga" element={<YogaRedirect />} />{" "}
-        {/* <Route path="/roadmap" element={<RoadmapGenerator />} /> */}
-        <Route path="/emotion" element={<EmotionDetector />} />
+        {/* <Route path="/yoga" element={<YogaRedirect />} />{" "} */}
+        <Route path="/public-speaking" element={<VideoPlayer />} />
+        {/* <Route path="/emotion" element={<EmotionDetector />} /> */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/journal" element={<Journal />} />
