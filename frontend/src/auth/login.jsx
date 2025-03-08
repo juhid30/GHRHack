@@ -48,9 +48,10 @@ export default function Login() {
   };
 
   return (
-    <div className="flex mx-auto min-h-[100vh] flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
+    <div className="flex mx-auto min-h-[100vh] flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-gradient-to-br from-[#E0EAF8] to-[#F0F4F8]">
+      <div className="max-w-[900px] mx-auto p-8 bg-white rounded-xl shadow-xl transform transition-all duration-500 hover:scale-105">
+        <div className="sm:mx-auto w-full ">
+          <h2 className="mt-10 text-center text-3xl font-semibold text-indigo-800 tracking-tight">
           Sign in to your account
         </h2>
       </div>

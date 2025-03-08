@@ -7,6 +7,7 @@ import {
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { openDB } from "idb"; // Import IndexedDB helper
 import { app } from "../firebase";
+import { Pen, FileText, User } from "lucide-react";
 
 export default function Register() {
   const [formData, setFormData] = useState({
