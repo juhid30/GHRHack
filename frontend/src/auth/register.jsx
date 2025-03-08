@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -15,6 +15,8 @@ export default function Register() {
     password: "",
     profilePic: null,
     resume: null,
+    knows: "",
+    wantsToBe: "",
   });
   const [localFiles, setLocalFiles] = useState({
     profilePic: null,
@@ -80,6 +82,8 @@ export default function Register() {
         email: formData.email,
         profilePic: formData.profilePic, // Stored file name
         resume: formData.resume, // Stored file name
+        knows: formData.knows,
+        wantsToBe: formData.wantsToBe,
       });
 
       alert("Registration successful!");
@@ -148,6 +152,22 @@ export default function Register() {
               Resume uploaded: {formData.resume}
             </p>
           )}
+          <input
+            type="text"
+            name="knows"
+            placeholder="What do you know? (e.g. React, Node.js)"
+            required
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
+          <input
+            type="text"
+            name="wantsToBe"
+            placeholder="What do you want to be? (e.g. Full Stack Developer)"
+            required
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
           <button
             type="submit"
             className="w-full bg-indigo-600 text-white p-2 rounded"

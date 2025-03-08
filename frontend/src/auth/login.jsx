@@ -35,6 +35,8 @@ export default function Login() {
           displayName: user.displayName,
           photoURL: userData.profilePic,
           resumeURL: userData.resume,
+          knows: userData.knows,
+          wantsToBe: userData.wantsToBe,
         })
       );
 
