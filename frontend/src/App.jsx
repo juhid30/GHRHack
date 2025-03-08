@@ -11,9 +11,9 @@ import Dashboard from "./components/Dashboard";
 import CodingPlatform from "./components/CodingPlatform";
 // import VideoPlayer from "./components/VideoPlayer";
 import ResumeViewer from "./components/ResumeViewer";
-import VideoPlayer from "./components/VideoPlayer";
 // import Layout from "./components/Layout";
 import LandingPage from "./pages/LandingPage";
+import ProfilePage from "./components/profile";
 
 function App() {
   return (
@@ -24,10 +24,11 @@ function App() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<ProfilePage />} />
         {/* <Route path="/yoga" element={<YogaRedirect />} />{" "} */}
         <Route path="/public-speaking" element={<VideoPlayer />} />
         {/* <Route path="/emotion" element={<EmotionDetector />} /> */}
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/study" element={<Dashboard />} />
         <Route path="/resume" element={<ResumeViewer />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/journal" element={<Journal />} />

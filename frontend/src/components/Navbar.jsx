@@ -1,13 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  const menuItems = ["Home", "Features", "About", "Contact"];
+  useEffect(() => {
+    const getUser = () => {
+      try {
+        const data = JSON.parse(localStorage.getItem("user"));
+        setUser(data);
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUser();
+  }, []);
+
+  const menuItems = ["Study", "Community", "Journal", "Calendar"];
 
   return (
     <motion.nav
@@ -34,20 +48,31 @@ const Navbar = () => {
                 key={item}
                 whileHover={{ scale: 1.1 }}
                 className="text-gray-700 hover:text-purple transition-colors"
-                href={`#${item.toLowerCase()}`}
+                href={`/${item.toLowerCase()}`}
               >
                 {item}
               </motion.a>
             ))}
             {/* Login/Register Button */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-5 py-2 bg-purple text-white rounded-lg shadow-md hover:bg-purple/80 transition"
-              onClick={() => navigate("/login")}
-            >
-              Login / Register
-            </motion.button>
+            {user ? (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-5 py-2 bg-purple text-white rounded-lg shadow-md hover:bg-purple/80 transition"
+                onClick={() => navigate("/profile")}
+              >
+                Profile
+              </motion.button>
+            ) : (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-5 py-2 bg-purple text-white rounded-lg shadow-md hover:bg-purple/80 transition"
+                onClick={() => navigate("/login")}
+              >
+                Login / Register
+              </motion.button>
+            )}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -78,15 +103,28 @@ const Navbar = () => {
                 {item}
               </a>
             ))}
-            <button
-              className="block w-full px-6 py-3 bg-purple text-white text-center hover:bg-purple/80 transition"
-              onClick={() => {
-                setIsOpen(false);
-                navigate("/login");
-              }}
-            >
-              Login / Register
-            </button>
+            {/* Mobile Login/Register or Profile Button */}
+            {user ? (
+              <button
+                className="block w-full px-6 py-3 bg-purple text-white text-center hover:bg-purple/80 transition"
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate("/profile");
+                }}
+              >
+                Profile
+              </button>
+            ) : (
+              <button
+                className="block w-full px-6 py-3 bg-purple text-white text-center hover:bg-purple/80 transition"
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate("/login");
+                }}
+              >
+                Login / Register
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
