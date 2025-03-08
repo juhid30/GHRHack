@@ -1,6 +1,3 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Login from "./auth/login";
@@ -12,10 +9,9 @@ import Journal from "./components/Journal";
 import Calendar from "./components/Calendar";
 import Dashboard from "./components/Dashboard";
 import CodingPlatform from "./components/CodingPlatform";
+import Jobs from "./components/jobs";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
       <Routes>
@@ -29,6 +25,8 @@ function App() {
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/coding" element={<CodingPlatform />} />
         <Route path="/roadmap" element={<RoadmapGenerator />} />
+        <Route path="/jobs" element={<Jobs />} />
+        <Route path="*" element={<h1>404</h1>} />
       </Routes>
     </>
   );
