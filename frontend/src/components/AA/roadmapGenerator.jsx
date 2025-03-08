@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import * as THREE from "three";
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader"; // Correct import for FontLoader
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry"; // Import TextGeometry
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import * as d3 from "d3"; // Import D3.js
 
 export default function RoadmapGenerator() {
   const [formData, setFormData] = useState({
@@ -19,15 +21,14 @@ export default function RoadmapGenerator() {
     height: 500,
   });
 
-  const [font, setFont] = useState(null); // State to store the loaded font
+  const [font, setFont] = useState(null);
 
   useEffect(() => {
-    // Load the font asynchronously and store it in the state
     const loader = new FontLoader();
     loader.load(
-      "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json", // Updated font URL
+      "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json",
       (loadedFont) => {
-        setFont(loadedFont); // Store the font in the state once it's loaded
+        setFont(loadedFont);
       },
       undefined,
       (error) => {
@@ -37,8 +38,8 @@ export default function RoadmapGenerator() {
   }, []);
 
   useEffect(() => {
-    if (roadmap && font) {
-      // Initialize the 3D scene
+    if (roadmap) {
+      // Initialize the 3D scene (still using Three.js for any 3D rendering)
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(
         75,
@@ -50,26 +51,26 @@ export default function RoadmapGenerator() {
       renderer.setSize(treeDimensions.width, treeDimensions.height);
       treeContainerRef.current.appendChild(renderer.domElement);
 
-      const light = new THREE.AmbientLight(0xffffff); // Ambient light
+      const light = new THREE.AmbientLight(0xffffff);
       scene.add(light);
-
       const light2 = new THREE.PointLight(0xffffff, 1, 500);
       light2.position.set(0, 0, 500);
       scene.add(light2);
-
       camera.position.z = 500;
 
-      buildTree(roadmap, scene, null, font); // Pass the loaded font to the tree building function
+      buildTree(roadmap, scene, null, font);
 
-      // Animation loop
       const animate = () => {
         requestAnimationFrame(animate);
         renderer.render(scene, camera);
       };
 
       animate();
+
+      // Create the D3 tree
+      createD3Tree(roadmap);
     }
-  }, [roadmap, treeDimensions, font]); // Run this effect when roadmap or font changes
+  }, [roadmap, treeDimensions, font]);
 
   const buildTree = (
     data,
@@ -80,9 +81,7 @@ export default function RoadmapGenerator() {
     xOffset = 0,
     yOffset = 0
   ) => {
-    const distance = 100; // Distance between nodes
-
-    // If data is an array, iterate through the array
+    const distance = 100;
     if (Array.isArray(data)) {
       data.forEach((node, index) => {
         createNode(
@@ -96,9 +95,7 @@ export default function RoadmapGenerator() {
           distance
         );
       });
-    }
-    // If data is a single object (like the root node), create the root node
-    else if (data && data.name) {
+    } else if (data && data.name) {
       createNode(data, scene, parent, font, level, xOffset, yOffset, distance);
     }
   };
@@ -121,10 +118,8 @@ export default function RoadmapGenerator() {
     mesh.position.set(xOffset, yOffset, 0);
     scene.add(mesh);
 
-    // Create a text label for the node, only if the font is available
     if (font) {
       const textGeometry = new TextGeometry(node.name, {
-        // Use TextGeometry correctly here
         font: font,
         size: 10,
         height: 1,
@@ -135,15 +130,13 @@ export default function RoadmapGenerator() {
       scene.add(textMesh);
     }
 
-    // Add interaction to animate on click
     mesh.onClick = () => {
-      mesh.scale.set(1.5, 1.5, 1.5); // Scale up on click for animation
+      mesh.scale.set(1.5, 1.5, 1.5);
       setTimeout(() => {
-        mesh.scale.set(1, 1, 1); // Scale back down after animation
+        mesh.scale.set(1, 1, 1);
       }, 300);
     };
 
-    // If the node has children, create the child nodes recursively
     if (node.children) {
       buildTree(
         node.children,
@@ -164,6 +157,90 @@ export default function RoadmapGenerator() {
         yOffset + distance
       );
     }
+  };
+
+  const createD3Tree = (data) => {
+    // Set up the D3 tree layout
+    const width = treeDimensions.width;
+    const height = treeDimensions.height;
+
+    const margin = { top: 20, right: 90, bottom: 30, left: 90 };
+    const treemap = d3.tree().size([height, width - 160]);
+
+    const root = d3.hierarchy(data, (d) => d.children);
+    treemap(root);
+
+    const svg = d3
+      .select(treeContainerRef.current)
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Links
+    const links = svg
+      .selectAll(".link")
+      .data(root.links())
+      .enter()
+      .append("path")
+      .attr("class", "link")
+      .attr("d", (d) => {
+        return (
+          "M" +
+          d.source.y +
+          "," +
+          d.source.x +
+          "C" +
+          (d.source.y + d.target.y) / 2 +
+          "," +
+          d.source.x +
+          " " +
+          (d.source.y + d.target.y) / 2 +
+          "," +
+          d.target.x +
+          " " +
+          d.target.y +
+          "," +
+          d.target.x
+        );
+      })
+      .attr("fill", "none")
+      .attr("stroke", "#ccc")
+      .attr("stroke-width", 2);
+
+    // Nodes
+    const nodes = svg
+      .selectAll(".node")
+      .data(root.descendants())
+      .enter()
+      .append("g")
+      .attr("class", "node")
+      .attr("transform", (d) => "translate(" + d.y + "," + d.x + ")");
+
+    nodes
+      .append("circle")
+      .attr("r", 10)
+      .attr("fill", (d) => (d.children ? "lightsteelblue" : "#fff"))
+      .attr("stroke", "#3182bd")
+      .attr("stroke-width", 2)
+      .on("click", (event, d) => {
+        // Animate node on click
+        d3.select(event.currentTarget)
+          .transition()
+          .duration(300)
+          .attr("r", 15)
+          .transition()
+          .duration(300)
+          .attr("r", 10);
+      });
+
+    nodes
+      .append("text")
+      .attr("dy", 3)
+      .attr("x", (d) => (d.children ? -12 : 12))
+      .attr("text-anchor", (d) => (d.children ? "end" : "start"))
+      .text((d) => d.data.name);
   };
 
   const handleChange = (e) => {
@@ -189,14 +266,9 @@ export default function RoadmapGenerator() {
       );
 
       let roadmapData = response.data.roadmap;
-
-      // Debug: Print raw response
       console.log("Raw API Response:", roadmapData);
+      roadmapData = roadmapData.replace(/```json\n?|\n?```/g, "").trim();
 
-      // Remove unwanted Markdown formatting if present
-      roadmapData = roadmapData.replace(/```json|```/g, "").trim();
-
-      // Ensure valid JSON format
       if (typeof roadmapData === "string") {
         roadmapData = JSON.parse(roadmapData);
       }
