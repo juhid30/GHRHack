@@ -11,9 +11,6 @@ import ResumeViewer from "./components/ResumeViewer";
 import Calendar from "./components/Calendar";
 import Dashboard from "./components/Dashboard";
 import CodingPlatform from "./components/CodingPlatform";
-import ResumeViewer from "./components/ResumeViewer";
-import VideoPlayer from "./components/VideoPlayer";
-// import Layout from "./components/Layout";
 import LandingPage from "./pages/LandingPage";
 
 function App() {
