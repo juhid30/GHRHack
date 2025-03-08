@@ -100,7 +100,6 @@ const CodeEditor = () => {
             options={{ minimap: { enabled: false } }}
             height="70vh"
             theme="vs-light" // Light theme for the Monaco editor
-            theme="vs-light" // changed theme from vs-dark to vs-light
             language={language}
             onMount={onMount}
             value={value}
