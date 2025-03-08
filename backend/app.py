@@ -131,6 +131,25 @@ def generate_roadmap():
     finally:
         os.remove(file_path)  # Clean up uploaded file
 
+
+@app.route('/save-audio', methods=['POST'])
+def save_audio():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part in the request'}), 400
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if file:
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)  # Save the file locally
+
+        return jsonify({'fileUrl': f'/temp/{filename}'})
+
+
 @app.route("/get-events", methods=["POST"])
 def get_events():
     

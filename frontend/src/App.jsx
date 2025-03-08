@@ -9,6 +9,7 @@ import Journal from "./components/Journal";
 import Calendar from "./components/Calendar";
 import Dashboard from "./components/Dashboard";
 import CodingPlatform from "./components/CodingPlatform";
+import VideoPlayer from "./components/VideoPlayer";
 import Jobs from "./components/jobs";
 
 function App() {
@@ -16,9 +17,12 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<h1>Home</h1>} />
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        {/* <Route path="/yoga" element={<YogaRedirect />} />{" "} */}
+        <Route path="/public-speaking" element={<VideoPlayer />} />
+        {/* <Route path="/emotion" element={<EmotionDetector />} /> */}
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/journal" element={<Journal />} />
         <Route path="/community" element={<CommunityForum />} />

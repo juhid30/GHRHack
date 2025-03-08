@@ -54,7 +54,7 @@ const EmotionDetector = () => {
 
     const interval = setInterval(() => {
       captureAndSendFrame();
-    }, 1000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
@@ -93,54 +93,93 @@ const EmotionDetector = () => {
 };
 
 const SpotifyPlayer = () => {
-  const [songName, setSongName] = useState("");
-  const [trackId, setTrackId] = useState(null);
+  const [tracks, setTracks] = useState([]);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [error, setError] = useState("");
 
-  const fetchSong = async () => {
+  const fetchSongs = async () => {
     setError("");
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/search_song?song=${encodeURIComponent(songName)}`
+        "http://127.0.0.1:5000/recommend?emotion=Happy"
       );
       const data = await response.json();
-      if (data.track_id) {
-        setTrackId(data.track_id);
+
+      if (Array.isArray(data) && data.length > 0) {
+        setTracks(data); // Store all songs
+        setCurrentTrackIndex(0); // Start with the first track
       } else {
-        setError("Song not found!");
+        setError("No songs found!");
       }
     } catch (error) {
-      console.error("Error fetching song:", error);
+      console.error("Error fetching songs:", error);
       setError("Something went wrong.");
     }
+  };
+
+  useEffect(() => {
+    fetchSongs();
+  }, []);
+
+  const handleNext = () => {
+    setCurrentTrackIndex((prev) => (prev + 1) % tracks.length);
+  };
+
+  const handlePrev = () => {
+    setCurrentTrackIndex((prev) => (prev - 1 + tracks.length) % tracks.length);
   };
 
   return (
     <div className="p-4 text-center w-1/3">
       <h2 className="text-xl font-bold">Spotify Player</h2>
-      <input
-        type="text"
-        className="border p-2 m-2 rounded w-full"
-        placeholder="Enter song name"
-        value={songName}
-        onChange={(e) => setSongName(e.target.value)}
-      />
       <button
         className="bg-green-500 text-white p-2 rounded w-full"
-        onClick={fetchSong}
+        onClick={fetchSongs}
       >
-        Play Song
+        Get All Songs
       </button>
+
       {error && <p className="text-red-500 mt-2">{error}</p>}
-      {trackId && (
-        <iframe
-          src={`https://open.spotify.com/embed/track/${trackId}`}
-          width="100%"
-          height="80"
-          frameBorder="0"
-          allow="encrypted-media"
-          className="mt-4"
-        ></iframe>
+
+      <ul className="mt-4 max-h-40 overflow-auto border p-2 rounded">
+        {tracks.map((track, index) => (
+          <li
+            key={index}
+            className={`cursor-pointer p-2 border-b ${
+              index === currentTrackIndex ? "bg-green-200 font-bold" : ""
+            }`}
+            onClick={() => setCurrentTrackIndex(index)}
+          >
+            {track.recommended_song}
+          </li>
+        ))}
+      </ul>
+
+      {tracks.length > 0 && (
+        <>
+          <iframe
+            src={`https://open.spotify.com/embed/track/${tracks[currentTrackIndex].track_id}`}
+            width="100%"
+            height="80"
+            frameBorder="0"
+            allow="encrypted-media"
+            className="mt-4"
+          ></iframe>
+          <div className="flex justify-between mt-2">
+            <button
+              className="bg-gray-500 text-white p-2 rounded"
+              onClick={handlePrev}
+            >
+              Previous
+            </button>
+            <button
+              className="bg-gray-500 text-white p-2 rounded"
+              onClick={handleNext}
+            >
+              Next
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
