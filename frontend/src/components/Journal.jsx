@@ -8,7 +8,7 @@ import { Toaster, toast } from 'react-hot-toast';
 import clsx from 'clsx';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const API_KEY = "YOUR_API_KEY"; // Replace with your actual API key
+const API_KEY = "AIzaSyBcox681xg8Y7ty5v8uUtOT7nV_tE-g8K8"; // Replace with your actual API key
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 const Journal = () => {

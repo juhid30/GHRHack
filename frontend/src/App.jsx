@@ -9,8 +9,6 @@ import Journal from "./components/Journal";
 import Calendar from "./components/Calendar";
 import Dashboard from "./components/Dashboard";
 import CodingPlatform from "./components/CodingPlatform";
-import VideoPlayer from "./components/VideoPlayer";
-import Jobs from "./components/jobs";
 
 function App() {
   return (
@@ -23,14 +21,13 @@ function App() {
         <Route path="/public-speaking" element={<VideoPlayer />} />
         {/* <Route path="/emotion" element={<EmotionDetector />} /> */}
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/resume" element={<ResumeViewer />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/journal" element={<Journal />} />
         <Route path="/community" element={<CommunityForum />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/coding" element={<CodingPlatform />} />
         <Route path="/roadmap" element={<RoadmapGenerator />} />
-        <Route path="/jobs" element={<Jobs />} />
-        <Route path="*" element={<h1>404</h1>} />
       </Routes>
     </>
   );
