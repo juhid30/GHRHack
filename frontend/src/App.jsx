@@ -28,7 +28,7 @@ function App() {
         {/* <Route path="/yoga" element={<YogaRedirect />} />{" "} */}
         <Route path="/public-speaking" element={<VideoPlayer />} />
         {/* <Route path="/emotion" element={<EmotionDetector />} /> */}
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/study" element={<Dashboard />} />
         <Route path="/resume" element={<ResumeViewer />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/journal" element={<Journal />} />

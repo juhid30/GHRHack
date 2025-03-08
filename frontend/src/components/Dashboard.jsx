@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import Navbar from "../components/Navbar";
 
 const PomodoroTimer = ({ duration }) => {
   const [timeLeft, setTimeLeft] = useState(duration * 60);
@@ -20,16 +22,23 @@ const PomodoroTimer = ({ duration }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full p-6 rounded-xl bg-white shadow-lg border border-gray-300">
+    <motion.div
+      initial={{ scale: 0.5 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 0.5 }}
+      className="flex flex-col items-center justify-center w-full p-6 rounded-xl bg-white shadow-lg border border-gray-300"
+    >
       <h2 className="text-3xl font-semibold text-gray-800">Pomodoro Timer</h2>
-      <p className="text-5xl font-bold my-4 text-gray-900">{formatTime(timeLeft)}</p>
+      <p className="text-5xl font-bold my-4 text-gray-900">
+        {formatTime(timeLeft)}
+      </p>
       <button
         className="px-6 py-3 mt-4 text-lg font-medium text-white transition-all duration-300 bg-blue-600 rounded-lg shadow-md hover:bg-blue-500 hover:scale-105 active:scale-95"
         onClick={() => setIsRunning(!isRunning)}
       >
         {isRunning ? "Pause" : "Start"}
       </button>
-    </div>
+    </motion.div>
   );
 };
 
@@ -85,7 +94,11 @@ const EmotionDetector = () => {
 
   return (
     <div className="flex flex-col items-center p-6 w-full bg-white shadow-lg rounded-xl border border-gray-300">
-      <video ref={videoRef} autoPlay className="border rounded-lg shadow-lg w-[30rem] h-[23rem]" />
+      <video
+        ref={videoRef}
+        autoPlay
+        className="border rounded-lg shadow-lg w-[30rem] h-[23rem]"
+      />
       <canvas ref={canvasRef} className="hidden" />
       <h2 className="text-xl font-semibold mt-4 text-red-500">{emotion}</h2>
     </div>
@@ -146,7 +159,9 @@ const SpotifyPlayer = () => {
           <li
             key={index}
             className={`cursor-pointer p-2 border-b ${
-              index === currentTrackIndex ? "bg-green-500 font-bold text-white" : "text-gray-600"
+              index === currentTrackIndex
+                ? "bg-green-500 font-bold text-white"
+                : "text-gray-600"
             }`}
             onClick={() => setCurrentTrackIndex(index)}
           >
@@ -188,6 +203,7 @@ const SpotifyPlayer = () => {
 const Dashboard = () => {
   return (
     <div className="flex flex-col items-center h-screen w-full bg-gradient-to-br from-gray-100 to-white text-gray-900">
+      <Navbar />
       <PomodoroTimer duration={25} />
       <div className="flex flex-grow w-full p-6 space-x-6">
         <EmotionDetector />
