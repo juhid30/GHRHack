@@ -10,8 +10,8 @@ import Quiz from "./components/Quiz";
 import CommunityForum from "./components/CommunityForum";
 import Journal from "./components/Journal";
 import Calendar from "./components/Calendar";
-import EmotionDetector from "./components/Emotion/EmotionDetector";
 import Dashboard from "./components/Dashboard";
+import CodingPlatform from "./components/CodingPlatform";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -31,6 +31,8 @@ function App() {
         <Route path="/journal" element={<Journal />} />
         <Route path="/community" element={<CommunityForum />} />
         <Route path="/calendar" element={<Calendar />} />
+        <Route path="/coding" element={<CodingPlatform />} />
+        <Route path="/roadmap" element={<RoadmapGenerator />} />
       </Routes>
     </>
   );
