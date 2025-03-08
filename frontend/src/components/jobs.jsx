@@ -1,132 +1,305 @@
-import React, { useState, useEffect } from "react";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import axios from "axios";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { MapPin, Briefcase, IndianRupee, ExternalLink } from "lucide-react";
 
-const genAI = new GoogleGenerativeAI("AIzaSyBcox681xg8Y7ty5v8uUtOT7nV_tE-g8K8");
+export default function JobsPage() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [locationFilter, setLocationFilter] = useState("");
+  const [skillFilter, setSkillFilter] = useState("");
+  const [selectedJob, setSelectedJob] = useState(null);
 
-export default function Jobs() {
-  const [user, setUser] = useState(null);
-  const [jobbs, setJobs] = useState([]);
+  const jobData = [
+    {
+      title: "Front-End Developer",
+      description:
+        "Develop user-facing features using React and other front-end technologies.",
+      location: "Mumbai, India",
+      link: "https://www.naukri.com/softwere-developer-jobs-in-india",
+      responsibilities: [
+        "Develop new features",
+        "Maintain existing codebase",
+        "Collaborate with designers and product managers",
+      ],
+      skills: ["React", "CSS", "JavaScript"],
+      payment: {
+        amount: Math.floor(Math.random() * (60000 - 30000 + 1)) + 30000,
+        currency: "INR",
+      },
+    },
+    {
+      title: "Back-End Developer",
+      description:
+        "Build and maintain server-side applications using Node.js and Express.",
+      location: "Pune, India",
+      link: "https://www.naukri.com/softwere-developer-jobs-in-india",
+      responsibilities: [
+        "Develop new features",
+        "Maintain existing codebase",
+        "Collaborate with designers and product managers",
+      ],
+      skills: ["Node.js", "Express", "JavaScript"],
+      payment: {
+        amount: Math.floor(Math.random() * (60000 - 30000 + 1)) + 30000,
+        currency: "INR",
+      },
+    },
+    {
+      title: "Full-Stack Developer",
+      description:
+        "Work on both front-end and back-end technologies to deliver complete solutions.",
+      location: "Nashik, India",
+      link: "https://www.naukri.com/softwere-developer-jobs-in-india",
+      responsibilities: [
+        "Develop new features",
+        "Maintain existing codebase",
+        "Collaborate with designers and product managers",
+      ],
+      skills: ["React", "Node.js", "CSS", "JavaScript"],
+      payment: {
+        amount: Math.floor(Math.random() * (60000 - 30000 + 1)) + 30000,
+        currency: "INR",
+      },
+    },
+    {
+      title: "JavaScript Developer",
+      description:
+        "Write clean and efficient JavaScript code for web applications.",
+      location: "Aurangabad, India",
+      link: "https://www.naukri.com/softwere-developer-jobs-in-india",
+      responsibilities: [
+        "Develop new features",
+        "Maintain existing codebase",
+        "Collaborate with designers and product managers",
+      ],
+      skills: ["JavaScript"],
+      payment: {
+        amount: Math.floor(Math.random() * (60000 - 30000 + 1)) + 30000,
+        currency: "INR",
+      },
+    },
+    {
+      title: "MERN Stack Developer",
+      description:
+        "Develop applications using MongoDB, Express, React, and Node.js.",
+      location: "Jalgaon, India",
+      link: "https://www.naukri.com/softwere-developer-jobs-in-india",
+      responsibilities: [
+        "Develop new features",
+        "Maintain existing codebase",
+        "Collaborate with designers and product managers",
+      ],
+      skills: ["MongoDB", "Express", "React", "Node.js", "JavaScript"],
+      payment: {
+        amount: Math.floor(Math.random() * (60000 - 30000 + 1)) + 30000,
+        currency: "INR",
+      },
+    },
+  ];
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setJobs(JSON.parse(localStorage.getItem("jobs")));
-    }
-  }, []);
+  // Get unique locations for filter
+  const locations = [...new Set(jobData.map((job) => job.location))];
 
-  const getJobs = async (res) => {
-    try {
-      const response = await axios.post("http://localhost:5000/get-jobs", res);
-      let jobs = response.data.jobs;
+  // Get unique skills for filter
+  const allSkills = jobData.flatMap((job) => job.skills);
+  const uniqueSkills = [...new Set(allSkills)];
 
-      jobs = jobs.replace(/```json\n?|\n?```/g, "");
+  // Filter jobs based on search term and filters
+  const filteredJobs = jobData.filter((job) => {
+    const matchesSearch =
+      job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.description.toLowerCase().includes(searchTerm.toLowerCase());
 
-      // Ensure jobs are parsed as JSON
-      const parsedJobs = JSON.parse(jobs);
-      setJobs(parsedJobs);
-      localStorage.setItem("jobs", JSON.stringify(parsedJobs));
+    const matchesLocation =
+      locationFilter === "" || job.location === locationFilter;
 
-      console.log("Jobs received:", parsedJobs);
-    } catch (error) {
-      console.error("Error fetching jobs:", error);
-    }
-  };
+    const matchesSkill = skillFilter === "" || job.skills.includes(skillFilter);
 
-  const generateRelatedFields = async () => {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const storedUser = localStorage.getItem("user");
-    if (!storedUser) return;
-
-    const user = JSON.parse(storedUser);
-
-    const prompt = `Based on the following information, generate related job titles (only 5):
-    Skills: ${user.knows}
-    Aspiring Role: ${user.wantsToBe}
-    I want JSON data only as output.
-    `;
-
-    try {
-      const result = await model.generateContent(prompt);
-      const responseText = result.response.text();
-
-      // Remove Markdown JSON formatting (if present)
-      const cleanedResponse = responseText.replace(/```json\n?|\n?```/g, "");
-      const response = JSON.parse(cleanedResponse);
-
-      console.log("Generated Job Titles:", response);
-
-      // Fetch jobs from the backend using generated job titles
-      await getJobs(response);
-    } catch (error) {
-      console.error("Error generating job titles:", error);
-    }
-  };
-
-  useEffect(() => {
-    generateRelatedFields();
-  }, []);
+    return matchesSearch && matchesLocation && matchesSkill;
+  });
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      {user ? (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-md"
+    <div className="container mx-auto py-8 px-4">
+      <h1 className="text-3xl font-bold mb-8 text-center text-[#7D5BA6]">
+        Job Listings
+      </h1>
+
+      {/* Search and Filters */}
+      <div className="mb-8 grid gap-4 md:grid-cols-3">
+        <div>
+          <input
+            placeholder="Search jobs..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded"
+          />
+        </div>
+
+        <select
+          value={locationFilter}
+          onChange={(e) => setLocationFilter(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded"
         >
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-2">
-            Welcome, {user.name}! 👋
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300">📧 {user.email}</p>
-          <p className="text-gray-600 dark:text-gray-300">
-            🛠️ Skills: {user.knows}
-          </p>
-          <p className="text-gray-600 dark:text-gray-300">
-            🎯 Aspiring Role: {user.wantsToBe}
-          </p>
+          <option value="">Filter by location</option>
+          <option value="all">All Locations</option>
+          {locations.map((location) => (
+            <option key={location} value={location}>
+              {location}
+            </option>
+          ))}
+        </select>
 
-          <button
-            className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-            onClick={generateRelatedFields}
-          >
-            Refresh Job Listings 🔄
-          </button>
-        </motion.div>
-      ) : (
-        <p className="text-center text-gray-500">Loading user data...</p>
-      )}
+        <select
+          value={skillFilter}
+          onChange={(e) => setSkillFilter(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded"
+        >
+          <option value="">Filter by skill</option>
+          <option value="all">All Skills</option>
+          {uniqueSkills.map((skill) => (
+            <option key={skill} value={skill}>
+              {skill}
+            </option>
+          ))}
+        </select>
+      </div>
 
-      <h3 className="text-xl font-semibold mt-8 text-gray-800 dark:text-white">
-        🎯 Job Recommendations
-      </h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-        {jobbs.length > 0 ? (
-          jobbs.map((job, index) => (
-            <motion.div
+      {/* Job Cards */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {filteredJobs.length > 0 ? (
+          filteredJobs.map((job, index) => (
+            <div
               key={index}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-              className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md"
+              className="h-full flex flex-col border border-gray-300 rounded-lg shadow-lg"
             >
-              <h4 className="text-lg font-medium text-gray-900 dark:text-white">
-                {job.title}
-              </h4>
-              <p className="text-gray-600 dark:text-gray-300 mt-2">
-                {job.description}
-              </p>
-            </motion.div>
+              <div className="p-4">
+                <h2 className="font-semibold text-xl text-[#7D5BA6]">
+                  {job.title}
+                </h2>
+                <p className="text-gray-600 flex items-center gap-1">
+                  <MapPin className="h-4 w-4" />
+                  {job.location}
+                </p>
+              </div>
+
+              <div className="flex-grow p-4">
+                <p className="mb-4">{job.description}</p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {job.skills.map((skill, i) => (
+                    <span
+                      key={i}
+                      className="px-2 py-1 text-sm bg-[#55D6BE] text-white rounded-full"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex items-center gap-1 text-gray-500">
+                  <IndianRupee className="h-4 w-4" />
+                  <span>
+                    {job.payment.amount.toLocaleString()} {job.payment.currency}
+                    /year
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-4 flex justify-between">
+                <button
+                  className="px-4 py-2 border border-gray-300 rounded text-[#7D5BA6]"
+                  onClick={() => setSelectedJob(job)}
+                >
+                  View Details
+                </button>
+                <button className="px-4 py-2 bg-[#FC6471] text-white rounded">
+                  <a
+                    href={job.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1"
+                  >
+                    Apply <ExternalLink className="h-4 w-4" />
+                  </a>
+                </button>
+              </div>
+            </div>
           ))
         ) : (
-          <p className="text-center text-gray-500 mt-4">
-            No jobs found matching your skills and aspiring role. 😔
-          </p>
+          <div className="col-span-full text-center py-12">
+            <h3 className="text-xl font-medium text-[#7D5BA6]">
+              No jobs found
+            </h3>
+            <p className="text-gray-500 mt-2">
+              Try adjusting your search or filters
+            </p>
+          </div>
         )}
       </div>
+
+      {/* Job Details Dialog */}
+      {selectedJob && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10"
+          onClick={() => setSelectedJob(null)}
+        >
+          <div
+            className="bg-white p-6 rounded-lg max-w-lg w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-2xl font-bold text-[#7D5BA6]">
+              {selectedJob.title}
+            </h2>
+            <p className="text-gray-600 flex items-center gap-1">
+              <MapPin className="h-4 w-4" />
+              {selectedJob.location}
+            </p>
+
+            <div className="mt-4">
+              <h3 className="font-semibold">Responsibilities</h3>
+              <ul className="list-disc pl-5 space-y-1">
+                {selectedJob.responsibilities.map((resp, i) => (
+                  <li key={i}>{resp}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mt-4">
+              <h3 className="font-semibold">Required Skills</h3>
+              <div className="flex flex-wrap gap-2">
+                {selectedJob.skills.map((skill, i) => (
+                  <span
+                    key={i}
+                    className="px-2 py-1 text-sm bg-[#55D6BE] text-white rounded-full"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <h3 className="font-semibold">Compensation</h3>
+              <p className="flex items-center gap-1">
+                <IndianRupee className="h-4 w-4" />
+                <span>
+                  {selectedJob.payment.amount.toLocaleString()}{" "}
+                  {selectedJob.payment.currency}/year
+                </span>
+              </p>
+            </div>
+
+            <div className="mt-4 flex justify-end">
+              <button className="px-4 py-2 bg-[#FC6471] text-white rounded">
+                <a
+                  href={selectedJob.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1"
+                >
+                  Apply Now <ExternalLink className="h-4 w-4" />
+                </a>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
