@@ -8,7 +8,7 @@ import { Toaster, toast } from 'react-hot-toast';
 import clsx from 'clsx';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const API_KEY = ""; // Replace with your actual API key
+const API_KEY = "YOUR_API_KEY"; // Replace with your actual API key
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 const Journal = () => {
@@ -25,8 +25,8 @@ const Journal = () => {
   const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
 
   const pageAnimation = useSpring({
-    from: { transform: 'perspective(1000px) rotateX(5deg)', opacity: 0 },
-    to: { transform: 'perspective(1000px) rotateX(0deg)', opacity: 1 },
+    from: { opacity: 0, y: 20 },
+    to: { opacity: 1, y: 0 },
     config: { mass: 1, tension: 280, friction: 60 },
   });
 
@@ -52,18 +52,17 @@ const Journal = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           className={clsx(
-            'bg-white rounded-xl shadow-xl p-4 max-w-md',
-            'border border-blue-100',
+            'bg-white rounded-lg shadow-lg p-4 max-w-md border border-neutral-200',
             t.visible ? 'animate-enter' : 'animate-leave'
           )}
         >
           <div className="flex items-start gap-3">
-            <Sparkles className="w-5 h-5 text-blue-500 flex-shrink-0 mt-1" />
+            <Sparkles className="w-5 h-5 text-neutral-600 flex-shrink-0 mt-1" />
             <div className="flex-1">
-              <h3 className="font-semibold text-gray-800 mb-2">Writing Suggestions</h3>
+              <h3 className="font-medium text-neutral-800 mb-2">Writing Suggestions</h3>
               <ul className="space-y-2">
                 {suggestions.map((suggestion, index) => (
-                  <li key={index} className="text-sm text-gray-600">
+                  <li key={index} className="text-sm text-neutral-600">
                     • {suggestion}
                   </li>
                 ))}
@@ -71,7 +70,7 @@ const Journal = () => {
             </div>
             <button
               onClick={() => toast.dismiss(t.id)}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-neutral-400 hover:text-neutral-600 transition-colors"
             >
               <X size={16} />
             </button>
@@ -170,18 +169,18 @@ const Journal = () => {
   );
 
   return (
-    <div className="h-screen flex overflow-hidden">
+    <div className="h-screen flex">
       <Toaster />
-      {/* Enhanced Sidebar */}
+      {/* Sidebar */}
       <motion.div 
         initial={{ x: -300 }}
         animate={{ x: 0 }}
-        className="w-96 bg-white shadow-xl border-r border-gray-200 flex flex-col"
+        className="w-80 bg-white border-r border-neutral-200 flex flex-col"
       >
-        <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-blue-500 to-indigo-600">
+        <div className="p-6 border-b border-neutral-200">
           <div className="flex items-center gap-3">
-            <BookOpen className="w-7 h-7 text-white" />
-            <h2 className="text-2xl font-bold text-white">My Journal</h2>
+            <BookOpen className="w-6 h-6 text-neutral-600" />
+            <h2 className="text-xl font-medium text-neutral-800">Journal</h2>
           </div>
           <div className="mt-4">
             <input
@@ -189,46 +188,45 @@ const Journal = () => {
               placeholder="Search entries..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg bg-white/10 text-white placeholder-white/70 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/50"
+              className="w-full px-3 py-2 rounded-md bg-neutral-50 text-neutral-700 placeholder-neutral-400 border border-neutral-200 focus:outline-none focus:ring-1 focus:ring-neutral-400 transition-all text-sm"
             />
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          <motion.div layout className="p-4 space-y-3">
+          <motion.div layout className="p-3 space-y-2">
             <AnimatePresence>
               {filteredEntries.map(entry => (
                 <motion.div
                   key={entry.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
+                  exit={{ opacity: 0, y: -10 }}
                   className={clsx(
-                    'p-4 rounded-xl cursor-pointer transition-all duration-200',
-                    'border border-transparent hover:border-blue-100',
+                    'p-3 rounded-lg cursor-pointer transition-all',
                     selectedEntry?.id === entry.id
-                      ? 'bg-gradient-to-r from-blue-50 to-indigo-50 shadow-md'
-                      : 'hover:bg-gray-50'
+                      ? 'bg-neutral-100'
+                      : 'hover:bg-neutral-50'
                   )}
                 >
-                  <div className="flex justify-between items-start">
+                  <div className="flex justify-between items-start group">
                     <div
                       className="flex-1"
                       onClick={() => setSelectedEntry(entry)}
                     >
-                      <h3 className="font-medium text-gray-800 truncate">{entry.title}</h3>
-                      <p className="text-sm text-gray-500 mt-1">{entry.date}</p>
+                      <h3 className="font-medium text-neutral-800 truncate">{entry.title}</h3>
+                      <p className="text-xs text-neutral-400 mt-1">{entry.date}</p>
                       {entry.content && (
-                        <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+                        <p className="text-sm text-neutral-600 mt-2 line-clamp-2">
                           {entry.content}
                         </p>
                       )}
                     </div>
                     <button
                       onClick={() => deleteEntry(entry.id)}
-                      className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                      className="opacity-0 group-hover:opacity-100 p-1 text-neutral-400 hover:text-red-500 transition-all"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 </motion.div>
@@ -237,154 +235,144 @@ const Journal = () => {
           </motion.div>
         </div>
 
-        <div className="p-4 border-t border-gray-100">
+        <div className="p-3 border-t border-neutral-200">
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
             onClick={createNewEntry}
-            className="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
+            className="w-full py-2 bg-neutral-900 text-white rounded-md shadow-sm hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2"
           >
-            <Plus size={20} />
-            <span>New Entry</span>
+            <Plus size={18} />
+            <span className="text-sm">New Entry</span>
           </motion.button>
         </div>
       </motion.div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden bg-gray-50">
+      <div className="flex-1 flex flex-col h-screen bg-neutral-50">
         <AnimatePresence mode="wait">
           {selectedEntry ? (
             <motion.div
               key="editor"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="flex-1 flex flex-col overflow-hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex-1 flex flex-col"
             >
-              {/* Formatting Toolbar */}
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white shadow-sm border-b border-gray-200 p-2 flex items-center gap-2 sticky top-0 z-10"
-              >
+              {/* Toolbar */}
+              <div className="bg-white border-b border-neutral-200 p-2 flex items-center gap-1">
                 <button
                   onClick={() => handleFormat('bold')}
                   className={clsx(
-                    'p-2 rounded hover:bg-gray-100 transition-colors',
-                    selectedEntry.style?.format?.includes('bold') && 'bg-blue-50 text-blue-600'
+                    'p-2 rounded hover:bg-neutral-100 transition-colors',
+                    selectedEntry.style?.format?.includes('bold') && 'bg-neutral-200'
                   )}
                 >
-                  <Bold size={18} />
+                  <Bold size={16} />
                 </button>
                 <button
                   onClick={() => handleFormat('italic')}
                   className={clsx(
-                    'p-2 rounded hover:bg-gray-100 transition-colors',
-                    selectedEntry.style?.format?.includes('italic') && 'bg-blue-50 text-blue-600'
+                    'p-2 rounded hover:bg-neutral-100 transition-colors',
+                    selectedEntry.style?.format?.includes('italic') && 'bg-neutral-200'
                   )}
                 >
-                  <Italic size={18} />
+                  <Italic size={16} />
                 </button>
                 <button
                   onClick={() => handleFormat('underline')}
                   className={clsx(
-                    'p-2 rounded hover:bg-gray-100 transition-colors',
-                    selectedEntry.style?.format?.includes('underline') && 'bg-blue-50 text-blue-600'
+                    'p-2 rounded hover:bg-neutral-100 transition-colors',
+                    selectedEntry.style?.format?.includes('underline') && 'bg-neutral-200'
                   )}
                 >
-                  <Underline size={18} />
+                  <Underline size={16} />
                 </button>
-                <div className="w-px h-6 bg-gray-200 mx-2" />
+                <div className="w-px h-4 bg-neutral-200 mx-1" />
                 <button
                   onClick={() => handleAlign('left')}
                   className={clsx(
-                    'p-2 rounded hover:bg-gray-100 transition-colors',
-                    selectedEntry.style?.align === 'left' && 'bg-blue-50 text-blue-600'
+                    'p-2 rounded hover:bg-neutral-100 transition-colors',
+                    selectedEntry.style?.align === 'left' && 'bg-neutral-200'
                   )}
                 >
-                  <AlignLeft size={18} />
+                  <AlignLeft size={16} />
                 </button>
                 <button
                   onClick={() => handleAlign('center')}
                   className={clsx(
-                    'p-2 rounded hover:bg-gray-100 transition-colors',
-                    selectedEntry.style?.align === 'center' && 'bg-blue-50 text-blue-600'
+                    'p-2 rounded hover:bg-neutral-100 transition-colors',
+                    selectedEntry.style?.align === 'center' && 'bg-neutral-200'
                   )}
                 >
-                  <AlignCenter size={18} />
+                  <AlignCenter size={16} />
                 </button>
                 <button
                   onClick={() => handleAlign('right')}
                   className={clsx(
-                    'p-2 rounded hover:bg-gray-100 transition-colors',
-                    selectedEntry.style?.align === 'right' && 'bg-blue-50 text-blue-600'
+                    'p-2 rounded hover:bg-neutral-100 transition-colors',
+                    selectedEntry.style?.align === 'right' && 'bg-neutral-200'
                   )}
                 >
-                  <AlignRight size={18} />
+                  <AlignRight size={16} />
                 </button>
-              </motion.div>
+              </div>
 
-              {/* Content Area */}
+              {/* Content */}
               <div className="flex-1 overflow-y-auto">
-                <div className="max-w-4xl mx-auto p-8">
-                  <animated.div style={pageAnimation} className="bg-white rounded-2xl shadow-xl">
-                    <div className="relative">
-                      {/* Entry Header */}
-                      <div className="p-8 border-b border-gray-100">
-                        <ContentEditable
-                          html={selectedEntry.title}
-                          onChange={(e) => handleContentChange(e.target.value, 'title')}
-                          className="text-3xl font-bold text-gray-800 outline-none w-full focus:ring-2 focus:ring-blue-100 rounded transition-all"
-                          tagName="h1"
-                        />
-                        <p className="text-sm text-gray-500 mt-2">{selectedEntry.date}</p>
-                      </div>
-
-                      {/* Entry Content */}
-                      <div
-                        className="min-h-[calc(100vh-16rem)] w-full p-8"
-                        style={{
-                          backgroundImage: 'linear-gradient(0deg, #f3f4f6 1px, transparent 1px)',
-                          backgroundSize: '100% 2rem',
-                          lineHeight: '2rem',
-                          backgroundAttachment: 'local',
-                        }}
-                      >
-                        <ContentEditable
-                          innerRef={contentEditableRef}
-                          html={selectedEntry.content}
-                          onChange={(e) => handleContentChange(e.target.value, 'content')}
-                          className={clsx(
-                            'min-h-full w-full outline-none text-gray-700 leading-8',
-                            'focus:ring-0 focus:outline-none transition-all',
-                            selectedEntry.style?.align === 'center' && 'text-center',
-                            selectedEntry.style?.align === 'right' && 'text-right',
-                            selectedEntry.style?.format?.includes('bold') && 'font-bold',
-                            selectedEntry.style?.format?.includes('italic') && 'italic',
-                            selectedEntry.style?.format?.includes('underline') && 'underline'
-                          )}
-                          tagName="div"
-                        />
-                      </div>
-
-                      {/* Save Indicator */}
-                      <AnimatePresence>
-                        {isSaving && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 20 }}
-                            className="fixed bottom-6 right-6 bg-black/80 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2"
-                          >
-                            <Save size={16} className="animate-pulse" />
-                            <span>Saving...</span>
-                          </motion.div>
+                <div className="max-w-2xl mx-auto p-8">
+                  <animated.div style={pageAnimation} className="bg-white rounded-lg shadow-sm border border-neutral-200">
+                    <div className="p-6 border-b border-neutral-200">
+                      <ContentEditable
+                        html={selectedEntry.title}
+                        onChange={(e) => handleContentChange(e.target.value, 'title')}
+                        className="text-2xl font-medium text-neutral-800 outline-none w-full focus:ring-1 focus:ring-neutral-300 rounded"
+                        tagName="h1"
+                      />
+                      <p className="text-xs text-neutral-400 mt-2">{selectedEntry.date}</p>
+                    </div>
+                    <div
+                      className="min-h-[calc(100vh-16rem)] w-full p-6"
+                      style={{
+                        backgroundImage: 'linear-gradient(0deg, #f5f5f5 1px, transparent 1px)',
+                        backgroundSize: '100% 2rem',
+                        lineHeight: '2rem',
+                        backgroundAttachment: 'local',
+                      }}
+                    >
+                      <ContentEditable
+                        innerRef={contentEditableRef}
+                        html={selectedEntry.content}
+                        onChange={(e) => handleContentChange(e.target.value, 'content')}
+                        className={clsx(
+                          'min-h-full w-full outline-none text-neutral-700 leading-8 text-base',
+                          selectedEntry.style?.align === 'center' && 'text-center',
+                          selectedEntry.style?.align === 'right' && 'text-right',
+                          selectedEntry.style?.format?.includes('bold') && 'font-bold',
+                          selectedEntry.style?.format?.includes('italic') && 'italic',
+                          selectedEntry.style?.format?.includes('underline') && 'underline'
                         )}
-                      </AnimatePresence>
+                        tagName="div"
+                      />
                     </div>
                   </animated.div>
                 </div>
               </div>
+
+              {/* Save Indicator */}
+              <AnimatePresence>
+                {isSaving && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    className="fixed bottom-4 right-4 bg-neutral-900 text-white px-3 py-2 rounded-md text-sm shadow-lg flex items-center gap-2"
+                  >
+                    <Save size={14} className="animate-pulse" />
+                    <span>Saving...</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           ) : (
             <motion.div
@@ -392,17 +380,17 @@ const Journal = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex-1 flex flex-col items-center justify-center gap-6 p-8"
+              className="flex-1 flex flex-col items-center justify-center gap-4"
             >
-              <PenLine size={64} className="text-gray-300" />
-              <h2 className="text-2xl font-semibold text-gray-600">Select an entry or create a new one</h2>
+              <PenLine size={48} className="text-neutral-300" />
+              <p className="text-neutral-600">Select an entry or create a new one</p>
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={createNewEntry}
-                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                className="px-4 py-2 bg-neutral-900 text-white rounded-md shadow-sm hover:bg-neutral-800 transition-colors flex items-center gap-2 text-sm"
               >
-                <Plus size={20} />
+                <Plus size={18} />
                 <span>New Entry</span>
               </motion.button>
             </motion.div>
