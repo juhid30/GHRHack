@@ -9,6 +9,7 @@ import RoadmapGenerator from "./components/AA/roadmapGenerator";
 import Quiz from "./components/Quiz";
 import CommunityForum from "./components/CommunityForum";
 import Journal from "./components/Journal";
+import Calendar from "./components/Calendar";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -23,6 +24,7 @@ function App() {
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/journal" element={<Journal />} />
         <Route path="/community" element={<CommunityForum />} />
+        <Route path="/calendar" element={<Calendar />} />
         <Route path="/roadmap" element={<RoadmapGenerator />} />
       </Routes>
     </>
