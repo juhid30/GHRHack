@@ -48,54 +48,56 @@ export default function Login() {
   };
 
   return (
-    <div className="flex mx-auto min-h-[100vh] flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
-          Sign in to your account
-        </h2>
-      </div>
+    <div className="flex mx-auto min-h-[100vh] flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-gradient-to-br from-[#E0EAF8] to-[#F0F4F8]">
+      <div className="max-w-[900px] mx-auto p-8 bg-white rounded-xl shadow-xl transform transition-all duration-500 hover:scale-105">
+        <div className="sm:mx-auto w-full ">
+          <h2 className="mt-10 text-center text-3xl font-semibold text-indigo-800 tracking-tight">
+            Sign in to your account
+          </h2>
+        </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-900">
-              Email address
-            </label>
-            <div className="mt-2">
-              <input
-                type="email"
-                name="email"
-                required
-                onChange={handleChange}
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-900  border-2 border-black placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
-              />
+        <div className="mt-10 sm:mx-auto w-full">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Email address
+              </label>
+              <div className="mt-2">
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  onChange={handleChange}
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-none border-2 border-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 shadow-md focus:outline-none transition-all duration-300"
+                />
+              </div>
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-900">
-              Password
-            </label>
-            <div className="mt-2">
-              <input
-                type="password"
-                name="password"
-                required
-                onChange={handleChange}
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300  border-2 border-black placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
-              />
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <div className="mt-2">
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  onChange={handleChange}
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-none border-2 border-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 shadow-md focus:outline-none transition-all duration-300"
+                />
+              </div>
             </div>
-          </div>
 
-          <div>
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-indigo-600"
-            >
-              Sign in
-            </button>
-          </div>
-        </form>
+            <div>
+              <button
+                type="submit"
+                className="w-full py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md shadow-lg hover:bg-indigo-500 hover:scale-105 transition-all duration-300 ease-in-out focus:ring-2 focus:ring-indigo-600 focus:outline-none"
+              >
+                Sign in
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

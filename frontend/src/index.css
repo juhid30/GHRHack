@@ -1,3 +1,71 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --mint: #55d6be;
+  --purple: #7d5ba6;
+  --coral: #fc6471;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa;
+}
+
+.gradient-text {
+  background: linear-gradient(45deg, var(--mint), var(--purple), var(--coral));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 300% 300%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.loading-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 0 5px;
+  animation: bounce 0.5s ease infinite;
+}
+
+.loading-dots span:nth-child(1) {
+  background: var(--mint);
+  animation-delay: 0.1s;
+}
+.loading-dots span:nth-child(2) {
+  background: var(--purple);
+  animation-delay: 0.2s;
+}
+.loading-dots span:nth-child(3) {
+  background: var(--coral);
+  animation-delay: 0.3s;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
