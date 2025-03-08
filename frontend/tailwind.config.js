@@ -5,7 +5,7 @@ export default {
     extend: {
       colors: {
         mint: "#55D6BE",
-        purple: "#7D5BA6",
+        purple: "#8a4594",
         coral: "#FC6471",
       },
       fontFamily: {
