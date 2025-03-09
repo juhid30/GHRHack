@@ -11,6 +11,7 @@ import Dashboard from "./components/Dashboard";
 import CodingPlatform from "./components/CodingPlatform";
 import ResumeViewer from "./components/ResumeViewer";
 import LandingPage from "./pages/LandingPage";
+import YogaRedirect from "./components/YogaRedirect";
 import ProfilePage from "./components/profile";
 import VideoPlayer from "./components/VideoPlayer";
 import InterestAnalyzer from "./components/InterestAnalyzer";

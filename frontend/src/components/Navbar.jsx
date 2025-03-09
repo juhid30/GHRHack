@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-
+import logo from "../assets/logo.png";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -38,7 +38,8 @@ const Navbar = () => {
             className="text-2xl font-bold gradient-text cursor-pointer"
             onClick={() => navigate("/")}
           >
-            Vidyarthi
+            <img src={logo} alt="Logo" className="w-[9.2rem]" />
+            {/* Vidyarthi */}
           </motion.h1>
 
           {/* Desktop Menu */}
