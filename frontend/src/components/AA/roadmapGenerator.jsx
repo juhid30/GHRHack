@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import Tree from "react-d3-tree";
+import Navbar from "../Navbar";
 
 export default function RoadmapGenerator() {
   const [formData, setFormData] = useState({
@@ -11,13 +12,31 @@ export default function RoadmapGenerator() {
   });
   const [roadmap, setRoadmap] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [fileName, setFileName] = useState("No file chosen");
+
+  // Color scheme
+  const colors = {
+    dark: {
+      primary: "#20397F",
+      secondary: "#000000",
+    },
+    light: {
+      primary: "#CD6D8B",
+      secondary: "#EEB6B3",
+      tertiary: "#F6D8D1",
+    },
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleFileChange = (e) => {
-    setFormData({ ...formData, syllabus: e.target.files[0] });
+    const file = e.target.files[0];
+    if (file) {
+      setFileName(file.name);
+      setFormData({ ...formData, syllabus: file });
+    }
   };
 
   const generateRoadmap = async () => {
@@ -40,14 +59,13 @@ export default function RoadmapGenerator() {
       let d = response.data.roadmap;
       d = d.replace(/```json|```/g, "").trim();
       const parsedData = JSON.parse(d);
-      setRoadmap(parsedData); // Set the parsed JSON data as roadmap
+      setRoadmap(parsedData);
     } catch (error) {
       console.error("Error generating roadmap", error);
     }
     setLoading(false);
   };
 
-  // Function to convert the roadmap JSON data into a structure that react-d3-tree can understand
   const convertToTreeData = (data) => {
     const traverse = (node) => {
       const newNode = { name: node.name, children: [] };
@@ -64,45 +82,49 @@ export default function RoadmapGenerator() {
     return traverse(data);
   };
 
-  // Custom rendering function for tree nodes
-  // Custom rendering function for tree nodes
-  // Custom rendering function for tree nodes
   const renderCustomNodeElement = ({ nodeDatum, toggleNode }) => {
-    // Generate a random color for each node for a colorful appearance
-    const colors = ["#FF5733", "#3357FF"];
-    const color = colors[Math.floor(Math.random() * colors.length)];
+    // Using the specified color scheme
+    const nodeColors = [
+      colors.dark.primary,
+      colors.light.primary,
+      colors.light.secondary,
+    ];
+    const color = nodeColors[Math.floor(Math.random() * nodeColors.length)];
 
-    // Calculate the width of the rectangle based on the length of the node name
     const nodeNameLength = nodeDatum.name.length;
-    const rectWidth = Math.max(100, nodeNameLength * 10); // Minimum width is 100, scaling based on name length
-    const rectHeight = 30; // Adjust the height as needed to fit the text
+    const rectWidth = Math.max(120, nodeNameLength * 8);
+    const rectHeight = 36;
+
+    // Determine text color based on background color for accessibility
+    const textColor =
+      color === colors.dark.primary ? "#fff" : colors.dark.primary;
 
     return (
       <g onClick={toggleNode}>
-        {/* Rectangle with dynamic width */}
         <rect
-          width={rectWidth} // Dynamic width based on the name length
-          height={rectHeight} // Fixed height for the rectangle
-          rx="10" // Rounded corners
-          ry="10" // Rounded corners
-          fill={color} // Random color for the rectangle
-          stroke="#000" // Border color
-          strokeWidth="1" // Border thickness
+          width={rectWidth}
+          height={rectHeight}
+          rx="4"
+          ry="4"
+          fill={color}
+          stroke={colors.light.tertiary}
+          strokeWidth="1"
         />
-
-        {/* Text inside the rectangle */}
         <foreignObject x={0} y={0} width={rectWidth} height={rectHeight}>
           <div
             style={{
+              height: "100%",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               textAlign: "center",
-              fontSize: "20px",
-              color: "#fff",
-              wordWrap: "break-word", // Ensure wrapping of long words
-              whiteSpace: "normal", // Allows the text to wrap onto multiple lines
-              padding: "0 5px", // Padding inside the box to avoid text touching the edges
+              fontSize: "14px",
+              fontWeight: "500",
+              color: textColor,
+              wordWrap: "break-word",
+              whiteSpace: "normal",
+              padding: "0 8px",
+              fontFamily: "system-ui, -apple-system, sans-serif",
             }}
           >
             {nodeDatum.name}
@@ -112,50 +134,179 @@ export default function RoadmapGenerator() {
     );
   };
 
-  const renderBackground = () => {
-    return (
-      <defs>
-        <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style={{ stopColor: "#33FF57", stopOpacity: 1 }} />
-          <stop
-            offset="100%"
-            style={{ stopColor: "#3357FF", stopOpacity: 1 }}
-          />
-        </linearGradient>
-      </defs>
-    );
-  };
-
   return (
-    <div className="max-w-[1000px] mx-auto p-6 space-y-6">
-      <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-        <h2 className="text-2xl font-bold mb-4">Roadmap Generator</h2>
-        <div className="space-y-4">
-          <input
-            name="year"
-            placeholder="Year"
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-          />
-          <input
-            name="university"
-            placeholder="University"
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-          />
-          <input
-            type="file"
-            name="syllabus"
-            onChange={handleFileChange}
-            className="w-full p-2 border rounded-md"
-          />
+    <div
+      className="max-w-[1000px] mx-auto p-6"
+      style={{ backgroundColor: colors.light.tertiary + "20" }}
+    >
+      <div className="flex flex-col items-center mb-6">
+        <Navbar />
+      </div>
+      <div
+        className="mt-[6.2rem]"
+        style={{
+          backgroundColor: "#fff",
+          borderRadius: "8px",
+          padding: "24px",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+        }}
+      >
+        <h2
+          style={{
+            color: colors.dark.primary,
+            fontSize: "24px",
+            fontWeight: "600",
+            marginBottom: "24px",
+          }}
+        >
+          Academic Roadmap
+        </h2>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div>
+            <label
+              htmlFor="year"
+              style={{
+                display: "block",
+                marginBottom: "6px",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: colors.dark.primary,
+              }}
+            >
+              Academic Year
+            </label>
+            <input
+              id="year"
+              name="year"
+              placeholder="e.g., 2024-2025"
+              onChange={handleChange}
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                fontSize: "14px",
+                color: colors.dark.secondary,
+                borderRadius: "4px",
+                border: "1px solid " + colors.light.secondary,
+                backgroundColor: "#fff",
+                outline: "none",
+              }}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="university"
+              style={{
+                display: "block",
+                marginBottom: "6px",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: colors.dark.primary,
+              }}
+            >
+              University Name
+            </label>
+            <input
+              id="university"
+              name="university"
+              placeholder="e.g., Stanford University"
+              onChange={handleChange}
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                fontSize: "14px",
+                color: colors.dark.secondary,
+                borderRadius: "4px",
+                border: "1px solid " + colors.light.secondary,
+                backgroundColor: "#fff",
+                outline: "none",
+              }}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="syllabus"
+              style={{
+                display: "block",
+                marginBottom: "6px",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: colors.dark.primary,
+              }}
+            >
+              Syllabus Document
+            </label>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <label
+                htmlFor="syllabus-upload"
+                style={{
+                  cursor: "pointer",
+                  padding: "8px 16px",
+                  borderRadius: "4px",
+                  backgroundColor: colors.dark.primary,
+                  color: "#fff",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                Choose File
+                <input
+                  id="syllabus-upload"
+                  type="file"
+                  name="syllabus"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+              </label>
+              <span
+                style={{
+                  fontSize: "14px",
+                  color: colors.dark.secondary,
+                  opacity: "0.7",
+                }}
+              >
+                {fileName}
+              </span>
+            </div>
+          </div>
+
           <button
             onClick={generateRoadmap}
             disabled={loading}
-            className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 flex items-center justify-center"
+            style={{
+              marginTop: "8px",
+              padding: "10px 16px",
+              borderRadius: "4px",
+              backgroundColor: colors.dark.primary,
+              color: "#fff",
+              fontSize: "14px",
+              fontWeight: "500",
+              border: "none",
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? "0.7" : "1",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "background-color 0.2s",
+            }}
           >
             {loading ? (
-              <Loader2 className="animate-spin h-5 w-5 mr-2" />
+              <>
+                <Loader2
+                  style={{
+                    animation: "spin 1s linear infinite",
+                    marginRight: "8px",
+                    height: "18px",
+                    width: "18px",
+                  }}
+                />
+                Generating...
+              </>
             ) : (
               "Generate Roadmap"
             )}
@@ -164,26 +315,81 @@ export default function RoadmapGenerator() {
       </div>
 
       {roadmap && (
-        <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-          <h2 className="text-xl font-semibold mb-4">Generated Roadmap</h2>
-          <div
-            id="treeWrapper"
+        <div
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: "8px",
+            padding: "24px",
+            marginTop: "24px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+          }}
+        >
+          <h2
             style={{
-              width: "100%",
-              height: "500px",
-              background: "url('path/to/your/image.jpg')", // Or you can use the gradient like below
-              backgroundColor: "url(#gradient1)", // Use the gradient background
-              backgroundSize: "cover", // Cover entire area
+              color: colors.dark.primary,
+              fontSize: "20px",
+              fontWeight: "600",
+              marginBottom: "16px",
             }}
           >
-            <Tree
-              data={convertToTreeData(roadmap)}
-              orientation="vertical"
-              renderCustomNodeElement={renderCustomNodeElement} // Apply custom node renderer
-              transitionDuration={1000} // Set transition duration to make animation smoother
-              nodeSize={{ x: 200, y: 100 }} // Control the space between nodes
-              transitionEasing="ease-in-out" // Control the easing for smoother animations
-            />
+            Your Academic Journey
+          </h2>
+
+          <div
+            style={{
+              borderRadius: "6px",
+              overflow: "hidden",
+              border: "1px solid " + colors.light.tertiary,
+              backgroundColor: colors.light.tertiary + "30",
+            }}
+          >
+            <div
+              id="treeWrapper"
+              style={{
+                width: "100%",
+                height: "600px",
+                backgroundImage: `linear-gradient(to right, ${colors.light.tertiary}10 1px, transparent 1px), linear-gradient(to bottom, ${colors.light.tertiary}10 1px, transparent 1px)`,
+                backgroundSize: "20px 20px",
+              }}
+            >
+              <Tree
+                data={convertToTreeData(roadmap)}
+                orientation="vertical"
+                renderCustomNodeElement={renderCustomNodeElement}
+                transitionDuration={500}
+                nodeSize={{ x: 200, y: 80 }}
+                separation={{ siblings: 1.5, nonSiblings: 2 }}
+                pathFunc="step"
+                pathClassFunc={() => "stroke-path"}
+                styles={{
+                  links: {
+                    stroke: colors.light.secondary,
+                    strokeWidth: 1.5,
+                  },
+                }}
+              />
+            </div>
+          </div>
+
+          <div
+            style={{
+              marginTop: "16px",
+              padding: "12px",
+              borderRadius: "4px",
+              backgroundColor: colors.light.tertiary + "30",
+              border: "1px solid " + colors.light.tertiary,
+            }}
+          >
+            <p
+              style={{
+                fontSize: "13px",
+                color: colors.dark.primary,
+                margin: 0,
+              }}
+            >
+              <strong>Tip:</strong> Click on nodes to expand or collapse
+              branches. Drag to pan the view.
+            </p>
           </div>
         </div>
       )}

@@ -22,7 +22,15 @@ const Navbar = () => {
     getUser();
   }, []);
 
-  const menuItems = ["Study", "Community", "Journal", "Resume", "Calendar", "Upskill"];
+  const menuItems = [
+    "Study",
+    "Community",
+    "Journal",
+    "Resume",
+    "Roadmap",
+    "Calendar",
+    "Upskill",
+  ];
 
   return (
     <motion.nav
