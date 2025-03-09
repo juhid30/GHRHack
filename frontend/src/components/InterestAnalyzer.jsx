@@ -3,8 +3,7 @@ import { motion } from "framer-motion";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import axios from "axios";
 import { Globe, Search, ExternalLink } from "lucide-react";
-
-// Removed unused getJson import
+import Navbar from "./Navbar"; // Added Navbar import
 
 function InterestAnalyzer() {
   const [urls, setUrls] = useState([]);
@@ -86,7 +85,8 @@ function InterestAnalyzer() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+      <Navbar /> {/* Added Navbar */}
+      <div className="container mx-auto px-4 py-12 pt-20"> {/* Increased top padding for sleek spacing */}
         <div className="flex flex-col md:flex-row gap-8">
           {/* Topics Section */}
           <motion.div
@@ -94,7 +94,7 @@ function InterestAnalyzer() {
             animate={{ opacity: 1, x: 0 }}
             className="md:w-1/3"
           >
-            <div className="bg-white rounded-xl shadow-lg p-6">
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 <Globe className="w-6 h-6 text-blue-500" />
                 Interest Topics
@@ -132,7 +132,7 @@ function InterestAnalyzer() {
             animate={{ opacity: 1, x: 0 }}
             className="md:w-2/3"
           >
-            <div className="bg-white rounded-xl shadow-lg p-6">
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 <Search className="w-6 h-6 text-blue-500" />
                 Related Articles

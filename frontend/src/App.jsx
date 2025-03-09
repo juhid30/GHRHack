@@ -13,6 +13,8 @@ import ResumeViewer from "./components/ResumeViewer";
 import LandingPage from "./pages/LandingPage";
 import ProfilePage from "./components/profile";
 import VideoPlayer from "./components/VideoPlayer";
+import InterestAnalyzer from "./components/InterestAnalyzer";
+import JobsPage from "./components/jobs";
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/coding" element={<CodingPlatform />} />
         <Route path="/roadmap" element={<RoadmapGenerator />} />
+        <Route path="/extension" element={<InterestAnalyzer />} />
+        <Route path="/jobs" element={< JobsPage/>} />
       </Routes>
     </>
   );

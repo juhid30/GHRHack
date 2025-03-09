@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import Navbar from "./Navbar"; // Added Navbar import
 
 const Quiz = () => {
   const [quizState, setQuizState] = useState("start");
@@ -433,12 +434,15 @@ const Quiz = () => {
   );
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen bg-[#F9F7F9]">
-      {showExitConfirm && <ExitConfirmDialog />}
-      {quizState === "start" && renderStart()}
-      {quizState === "quiz" && renderQuestion()}
-      {quizState === "complete" && renderComplete()}
-    </div>
+    <>
+      <Navbar /> {/* Navbar added */}
+      <div className="relative flex flex-col items-center justify-center min-h-screen bg-[#F9F7F9] pt-16">
+        {showExitConfirm && <ExitConfirmDialog />}
+        {quizState === "start" && renderStart()}
+        {quizState === "quiz" && renderQuestion()}
+        {quizState === "complete" && renderComplete()}
+      </div>
+    </>
   );
 };
 
