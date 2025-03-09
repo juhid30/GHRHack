@@ -151,12 +151,12 @@ export function ProfileHeader() {
 // Skills Section (Redesigned)
 export function SkillsSection() {
   const skills = [
-    { name: "JavaScript", level: 85 },
-    { name: "React", level: 78 },
-    { name: "Node.js", level: 70 },
+    { name: "JavaScript", level: 90 },
+    { name: "React", level: 90 },
+    { name: "Node.js", level: 85 },
     { name: "CSS", level: 90 },
-    { name: "TypeScript", level: 65 },
-    { name: "Next.js", level: 60 },
+    { name: "TypeScript", level: 75 },
+    { name: "Next.js", level: 75 },
   ];
 
   return (

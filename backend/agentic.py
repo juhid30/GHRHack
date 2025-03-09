@@ -16,7 +16,7 @@ text_data = [extract_text_from_pdf(pdf) for pdf in pdf_files]
 
 
 
-client = genai.Client(api_key="AIzaSyBcox681xg8Y7ty5v8uUtOT7nV_tE-g8K8")
+client = genai.Client(api_key="AIzaSyDOky3a0Mpbe13I6Zo4t-RZ-pt4F8NbG5I")
 
 # Prepare fine-tuning data
 training_data = [{"input": txt[:500], "output": txt[500:1000]} for txt in text_data]

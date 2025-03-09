@@ -145,7 +145,7 @@ def generate_roadmap():
                   "Also consider industry trends while generating the roadmap."
                   f"The output should be \n{output}\n in json format nothing more.and limit text in output to 20 words in each node") 
 
-        genai.configure(api_key="AIzaSyBcox681xg8Y7ty5v8uUtOT7nV_tE-g8K8")
+        genai.configure(api_key="AIzaSyDOky3a0Mpbe13I6Zo4t-RZ-pt4F8NbG5I")
 
         model = genai.GenerativeModel(model_name='gemini-1.5-flash')
         response = model.generate_content(prompt)
@@ -211,7 +211,7 @@ def get_events():
             "I just want json data nothing else as response."
         )
 
-        genai.configure(api_key="AIzaSyBcox681xg8Y7ty5v8uUtOT7nV_tE-g8K8")
+        genai.configure(api_key="AIzaSyDOky3a0Mpbe13I6Zo4t-RZ-pt4F8NbG5I")
 
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
         response = model.generate_content(prompt)
@@ -280,7 +280,7 @@ def get_jobs():
     data = request.json
     print(data)
 
-    # genai.configure(api_key="AIzaSyBcox681xg8Y7ty5v8uUtOT7nV_tE-g8K8")
+    # genai.configure(api_key="AIzaSyDOky3a0Mpbe13I6Zo4t-RZ-pt4F8NbG5I")
 
     # model = genai.GenerativeModel(model_name="gemini-1.5-flash")
 

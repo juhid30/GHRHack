@@ -1,10 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
+import { motion } from "framer-motion";
+// import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-const PomodoroTimer = ({ duration }) => {
+export const PomodoroTimer = ({ duration }) => {
   const [timeLeft, setTimeLeft] = useState(duration * 60);
   const [isRunning, setIsRunning] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isRunning) return;
@@ -23,21 +27,38 @@ const PomodoroTimer = ({ duration }) => {
 
   return (
     <motion.div
-      initial={{ scale: 0.95 }}
-      animate={{ scale: 1 }}
-      transition={{ duration: 0.3 }}
-      className="flex flex-col items-center justify-center w-full p-6 rounded-lg bg-[#ffeae5e7] shadow-sm border border-[#EEB6B3]"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="flex flex-col items-center justify-center w-full p-8 rounded-[2rem] bg-white/10 backdrop-blur-lg shadow-lg border border-white/20 relative"
     >
-      <h2 className="text-2xl font-medium text-[#20397F]">Focus Timer</h2>
-      <p className="text-6xl font-bold my-6 text-[#20397F]">
+      <h2 className="text-3xl font-semibold  tracking-wide drop-shadow-lg">
+        ⏳ Focus Timer
+      </h2>
+
+      <p className="text-7xl font-extrabold my-6 tracking-wide drop-shadow-lg">
         {formatTime(timeLeft)}
       </p>
-      <button
-        className="px-6 py-2 text-base font-medium text-white transition-all duration-200 bg-[#CD6D8B] rounded-md hover:bg-opacity-90 active:scale-95"
-        onClick={() => setIsRunning(!isRunning)}
-      >
-        {isRunning ? "Pause" : "Start"}
-      </button>
+
+      <div className="flex gap-6">
+        {/* Start / Pause Button */}
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          className="px-8 py-3 text-lg font-semibold text-white bg-gradient-to-r from-[#ff758c] to-[#ff7eb3] rounded-xl shadow-lg hover:shadow-xl hover:from-[#ff5a82] hover:to-[#ff6895] active:scale-95 transition-all duration-300"
+          onClick={() => setIsRunning(!isRunning)}
+        >
+          {isRunning ? "Pause ⏸" : "Start ▶"}
+        </motion.button>
+
+        {/* Take a Break Button */}
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          className="px-8 py-3 text-lg font-semibold  bg-white/10 border border-white/40 rounded-xl shadow-lg hover:shadow-xl hover:bg-white/20 active:scale-95 transition-all duration-300"
+          onClick={() => navigate("/yoga")}
+        >
+          Take a Break 🌿
+        </motion.button>
+      </div>
     </motion.div>
   );
 };
@@ -96,18 +117,16 @@ const EmotionDetector = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 w-full bg-[#ffeae5e7] shadow-sm rounded-lg border border-[#EEB6B3]">
-      <h2 className="text-xl font-medium mb-4 text-[#20397F]">
-        Mood Detection
-      </h2>
+    <div className="flex flex-col items-center p-6 w-full bg-[#ffeae5e7] shadow-sm rounded-[1.8rem] border border-[#EEB6B3]">
+      <h2 className="text-2xl font-bold mb-4 text-[#1c2c59]">Mood Detection</h2>
       <video
         ref={videoRef}
         autoPlay
-        className="border rounded-md shadow-sm w-full max-w-md aspect-video object-cover"
+        className="border rounded-[1.2rem] shadow-sm w-full max-w-lg aspect-video object-cover"
       />
       <canvas ref={canvasRef} className="hidden" />
       <div className="mt-4 py-2 px-4 rounded-md bg-[#EEB6B3] inline-block">
-        <p className="font-medium text-[#20397F]">
+        <p className="font-medium text-[#1c2c59]">
           Current mood: <span className="font-bold">{emotion}</span>
         </p>
       </div>
@@ -153,8 +172,8 @@ const SpotifyPlayer = () => {
   };
 
   return (
-    <div className="p-6 text-center w-full bg-[#ffeae5e7] shadow-sm rounded-lg border border-[#EEB6B3]">
-      <h2 className="text-xl font-medium text-[#20397F] mb-4">
+    <div className="p-6 text-center w-full shadow-sm rounded-[1.8rem] border-4 border-[#EEB6B3]">
+      <h2 className="text-xl font-medium text-[#1c2c59] mb-4">
         Music Recommendations
       </h2>
       <button
@@ -164,16 +183,16 @@ const SpotifyPlayer = () => {
         Refresh Recommendations
       </button>
 
-      {error && <p className="text-[#20397F] mt-2">{error}</p>}
+      {error && <p className="text-[#1c2c59] mt-2">{error}</p>}
 
-      <div className="mt-4 max-h-48 overflow-auto border border-[#EEB6B3] p-2 rounded-md bg-[#ffeae5e7] bg-opacity-70">
+      <div className="mt-4 max-h-48 overflow-auto border  p-2 rounded-md  bg-opacity-70">
         {tracks.map((track, index) => (
           <div
             key={index}
             className={`cursor-pointer p-2 mb-1 rounded-md transition-colors ${
               index === currentTrackIndex
                 ? "bg-[#CD6D8B] font-medium text-white"
-                : "bg-[#EEB6B3] bg-opacity-50 text-[#20397F] hover:bg-opacity-70"
+                : "bg-[#EEB6B3] bg-opacity-50 text-[#1c2c59] hover:bg-opacity-70"
             }`}
             onClick={() => setCurrentTrackIndex(index)}
           >
@@ -194,13 +213,13 @@ const SpotifyPlayer = () => {
           ></iframe>
           <div className="flex justify-between mt-3">
             <button
-              className="bg-[#20397F] text-white px-4 py-2 rounded-md shadow-sm hover:bg-opacity-90 transition-all"
+              className="bg-[#1c2c59] text-white px-4 py-2 rounded-md shadow-sm hover:bg-opacity-90 transition-all"
               onClick={handlePrev}
             >
               Previous
             </button>
             <button
-              className="bg-[#20397F] text-white px-4 py-2 rounded-md shadow-sm hover:bg-opacity-90 transition-all"
+              className="bg-[#1c2c59] text-white px-4 py-2 rounded-md shadow-sm hover:bg-opacity-90 transition-all"
               onClick={handleNext}
             >
               Next
@@ -214,13 +233,13 @@ const SpotifyPlayer = () => {
 
 const Dashboard = () => {
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-[#fffaf8] to-white text-[#20397F]">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-[#fffaf8] to-white text-[#1c2c59]">
       <Navbar />
       <div className="container mx-auto px-4 py-6 flex-grow mt-[5rem]">
-        <div className="max-w-4xl mx-auto mb-6">
+        <div className="max-w-6xl mx-auto mb-6">
           <PomodoroTimer duration={25} />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
           <EmotionDetector />
           <SpotifyPlayer />
         </div>
