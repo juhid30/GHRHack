@@ -47,14 +47,14 @@ function CommunityChat() {
       /final note/i,
       /ending it all/i,
     ];
-    
+
     return vulnerableKeywords.some((regex) => regex.test(text));
   };
 
   // Handler for alerting and redirecting
   const handleVulnerableContent = async () => {
     setShowAlert(true);
-    
+
     try {
       // Send email alert
       const response = await axios.get(
@@ -68,14 +68,14 @@ NOTE: THIS MAY BE A FALSE ALARM DUE TO ACCURACY ISSUES, BUT WE DO REQUEST YOU TO
           },
         }
       );
-      
+
       if (response.status !== 200) {
         console.error("Failed to send email alert");
       }
     } catch (error) {
       console.error("Error sending email alert:", error);
     }
-    
+
     // Set timer for redirect
     setTimeout(() => {
       window.location.href = "https://telemanas.mohfw.gov.in/home";
@@ -114,12 +114,6 @@ NOTE: THIS MAY BE A FALSE ALARM DUE TO ACCURACY ISSUES, BUT WE DO REQUEST YOU TO
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
-    
-    // Check for vulnerable content before sending
-    if (checkMentalHealthIssues(newMessage)) {
-      handleVulnerableContent();
-    }
-    
     const communityId = selectedCommunity.id;
     const userMsg = {
       text: newMessage,
@@ -180,9 +174,7 @@ NOTE: THIS MAY BE A FALSE ALARM DUE TO ACCURACY ISSUES, BUT WE DO REQUEST YOU TO
             <p className="text-xl font-semibold">
               You're not alone. We're connecting you with support resources.
             </p>
-            <p className="mt-4 text-gray-600">
-              Redirecting in 5 seconds...
-            </p>
+            <p className="mt-4 text-gray-600">Redirecting in 5 seconds...</p>
           </div>
         </div>
       )}
