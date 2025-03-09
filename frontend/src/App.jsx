@@ -6,13 +6,16 @@ import RoadmapGenerator from "./components/AA/roadmapGenerator";
 import Quiz from "./components/Quiz";
 import CommunityForum from "./components/CommunityForum";
 import Journal from "./components/Journal";
-import VideoPlayer from "./components/VideoPlayer";
-import ResumeViewer from "./components/ResumeViewer";
 import Calendar from "./components/Calendar";
 import Dashboard from "./components/Dashboard";
 import CodingPlatform from "./components/CodingPlatform";
+import ResumeViewer from "./components/ResumeViewer";
 import LandingPage from "./pages/LandingPage";
 import YogaRedirect from "./components/YogaRedirect";
+import ProfilePage from "./components/profile";
+import VideoPlayer from "./components/VideoPlayer";
+import InterestAnalyzer from "./components/InterestAnalyzer";
+import JobsPage from "./components/jobs";
 
 function App() {
   return (
@@ -23,11 +26,11 @@ function App() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<ProfilePage />} />
         {/* <Route path="/yoga" element={<YogaRedirect />} />{" "} */}
         <Route path="/public-speaking" element={<VideoPlayer />} />
         {/* <Route path="/emotion" element={<EmotionDetector />} /> */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/yoga" element={<YogaRedirect />} />
+        <Route path="/study" element={<Dashboard />} />
         <Route path="/resume" element={<ResumeViewer />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/journal" element={<Journal />} />
@@ -35,6 +38,8 @@ function App() {
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/coding" element={<CodingPlatform />} />
         <Route path="/roadmap" element={<RoadmapGenerator />} />
+        <Route path="/extension" element={<InterestAnalyzer />} />
+        <Route path="/jobs" element={< JobsPage/>} />
       </Routes>
     </>
   );

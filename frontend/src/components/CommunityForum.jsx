@@ -1,231 +1,261 @@
-import React, { useState } from "react";
-// import Layout from "./Layout";
+import { useState } from "react";
+import { HiPlus, HiPaperAirplane, HiChat, HiUserGroup } from "react-icons/hi";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import Navbar from "./Navbar";
 
-function CommunityForum() {
-  const [forums, setForums] = useState([
-    {
-      name: "Sustainable Living Discussions",
-      id: 1,
-      createdAt: "Dec 12, 2023 - 09:00 WIB",
-      createdBy: "John Doe",
-    },
-    {
-      name: "Environmental Awareness Campaigns",
-      id: 2,
-      createdAt: "Dec 13, 2023 - 10:00 WIB",
-      createdBy: "Jane Smith",
-    },
+const API_KEY = "AIzaSyBcox681xg8Y7ty5v8uUtOT7nV_tE-g8K8"; // Replace with your actual API key
+const genAI = new GoogleGenerativeAI(API_KEY);
+
+function CommunityChat() {
+  const generateSuggestions = async (content) => {
+    if (!API_KEY || isGeneratingSuggestions || !content.trim()) return;
+
+    try {
+      setIsGeneratingSuggestions(true);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const prompt = `Based on this journal entry: "${content}", analyze the emotional tone and provide 3 thoughtful suggestions to help the writer express and understand their feelings better. Format the response as a JSON array of strings with each suggestion being concise and empathetic. Example format: ["Consider exploring...", "You might want to reflect on...", "Try expressing..."]`;
+
+      const result = await model.generateContent(prompt);
+      const suggestionsText = result.response.text();
+      const suggestions = JSON.parse(suggestionsText);
+    } catch (error) {
+      console.error(
+        "Error generating suggestions:",
+        error instanceof Error ? error.message : "Unknown error"
+      );
+    }
+  };
+
+  const checkMentalHealthIssues = (text) => {
+    const keywords = [
+      /suicide/i,
+      /depression/i,
+      /anxiety/i,
+      /self[- ]?harm/i,
+      /mental health/i,
+      /hopeless/i,
+      /kill myself/i,
+    ];
+    return keywords.some((regex) => regex.test(text));
+  };
+
+  const generateChatResponse = async (userMessage) => {
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const prompt = `You are an empathetic AI assistant. Respond to the following message in a helpful and friendly manner:\n"${userMessage}"`;
+      const result = await model.generateContent(prompt);
+      const aiResponse = result.response.text();
+      if (checkMentalHealthIssues(aiResponse)) {
+        window.alert(
+          "It appears the conversation touches on sensitive mental health topics. Please consider seeking professional help if needed."
+        );
+      }
+      return aiResponse;
+    } catch (error) {
+      console.error(
+        "Error generating AI response:",
+        error instanceof Error ? error.message : "Unknown error"
+      );
+      return "I'm sorry, I'm unable to process your message at the moment.";
+    }
+  };
+
+  const [communities, setCommunities] = useState([
+    { id: "ai", name: "AI Chat", isAI: true },
+    { id: "1", name: "General Discussion", isAI: false },
+    { id: "2", name: "Tech Talk", isAI: false },
   ]);
-  const [showPopup, setShowPopup] = useState(false);
-  const [newForumName, setNewForumName] = useState("");
-  const [selectedForumId, setSelectedForumId] = useState(1);
-  const [comments, setComments] = useState({
-    1: [
-      {
-        id: 1,
-        user: "Juhi Deore",
-        messages: ["How can we promote sustainable living in our community?"],
-        profileImage: "https://example.com/profile1.jpg",
-      },
-    ],
-    2: [],
-  });
+  const [selectedCommunity, setSelectedCommunity] = useState(communities[0]);
+  const [messages, setMessages] = useState({});
   const [newMessage, setNewMessage] = useState("");
+  const [newCommunityName, setNewCommunityName] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
 
-  const handleCreateClick = () => {
-    setShowPopup(true);
-  };
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!newMessage.trim()) return;
+    const communityId = selectedCommunity.id;
+    const userMsg = {
+      text: newMessage,
+      sender: "user",
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+    const newMessages = {
+      ...messages,
+      [communityId]: [...(messages[communityId] || []), userMsg],
+    };
+    setMessages(newMessages);
+    const currentUserMessage = newMessage;
+    setNewMessage("");
 
-  const handleDoneClick = () => {
-    if (newForumName.trim()) {
-      const newId = forums.length + 1;
-      setForums([
-        ...forums,
-        {
-          name: newForumName,
-          id: newId,
-          createdAt: new Date().toLocaleString(),
-          createdBy: "Current User",
-        },
-      ]);
-      setComments({ ...comments, [newId]: [] });
-      setNewForumName("");
-    }
-    setShowPopup(false);
-  };
-
-  const handleCancelClick = () => {
-    setShowPopup(false);
-    setNewForumName("");
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleDoneClick();
-    }
-  };
-
-  const handleForumClick = (id) => {
-    setSelectedForumId(id);
-  };
-
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      const currentComments = comments[selectedForumId];
-      const newComment = {
-        id: currentComments.length + 1,
-        user: "Current User",
-        messages: [newMessage],
-        profileImage: "https://example.com/profile.jpg",
-      };
-      setComments({
-        ...comments,
-        [selectedForumId]: [...currentComments, newComment],
-      });
-      setNewMessage("");
+    if (selectedCommunity.isAI) {
+      const aiText = await generateChatResponse(currentUserMessage);
+      setMessages((prev) => ({
+        ...prev,
+        [communityId]: [
+          ...(prev[communityId] || []),
+          {
+            text: aiText,
+            sender: "ai",
+            timestamp: new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+          },
+        ],
+      }));
     }
   };
 
-  const handleInputKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleSendMessage();
-    }
+  const createCommunity = () => {
+    if (!newCommunityName.trim()) return;
+    const newCommunity = {
+      id: Date.now().toString(),
+      name: newCommunityName,
+      isAI: false,
+    };
+    setCommunities([...communities, newCommunity]);
+    setNewCommunityName("");
+    setIsCreating(false);
   };
-
-  const selectedForum = forums.find((f) => f.id === selectedForumId);
 
   return (
-    <Layout>
-      <div className="flex h-[90vh] w-full bg-green-50 p-4">
+    <>
+      {/* Navbar at the top */}
+      <div className="fixed top-0 w-full z-10">
+        <Navbar />
+      </div>
+
+      {/* Main content starts below the navbar */}
+      <div className="flex h-screen pt-16 bg-[#f8f9fa]">
         {/* Sidebar */}
-        <aside className="w-64 h-full bg-white shadow-md rounded-lg p-4">
-          <h2 className="text-lg font-bold text-[#7C4775]">Forum Categories</h2>
-          <div className="mt-4 space-y-2">
-            {forums.map((forum) => (
-              <div
-                key={forum.id}
-                onClick={() => handleForumClick(forum.id)}
-                className={`p-2 rounded-lg cursor-pointer transition-all duration-200 hover:bg-[#A27A9C] ${
-                  selectedForumId === forum.id
-                    ? "bg-[#f1caeb] text-white"
-                    : "bg-white"
-                }`}
-              >
-                <h3 className="font-semibold text-[#7C4775]">{forum.name}</h3>
-                <p className="text-sm text-gray-600">
-                  Created by: {forum.createdBy}
+        <div className="w-72 border-r border-[#e9ecef] bg-white">
+          <div className="p-4 border-b border-[#e9ecef]">
+            <h2 className="text-xl font-semibold mb-1">Communities</h2>
+            <p className="text-sm text-[#6c757d]">Join or create a community</p>
+          </div>
+
+          <div className="p-4">
+            <button
+              onClick={() => setIsCreating(true)}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 mb-4 bg-[#228be6] text-white rounded-md hover:bg-[#1c7ed6] transition-colors"
+            >
+              <HiPlus className="w-5 h-5" />
+              <span>New Community</span>
+            </button>
+
+            {isCreating && (
+              <div className="mb-4">
+                <input
+                  type="text"
+                  value={newCommunityName}
+                  onChange={(e) => setNewCommunityName(e.target.value)}
+                  placeholder="Enter community name..."
+                  className="w-full px-3 py-2 rounded-md border border-[#e9ecef] bg-white focus:outline-none focus:border-[#228be6]"
+                  onKeyDown={(e) => e.key === "Enter" && createCommunity()}
+                />
+              </div>
+            )}
+
+            <div className="space-y-0.5">
+              {communities.map((community) => (
+                <button
+                  key={community.id}
+                  onClick={() => setSelectedCommunity(community)}
+                  className={`w-full text-left px-3 py-2.5 rounded-md flex items-center gap-3 transition-colors ${
+                    selectedCommunity.id === community.id
+                      ? "bg-[#228be6] text-white"
+                      : "hover:bg-[#f1f3f5]"
+                  }`}
+                >
+                  {community.isAI ? (
+                    <HiChat className="w-5 h-5 shrink-0" />
+                  ) : (
+                    <HiUserGroup className="w-5 h-5 shrink-0" />
+                  )}
+                  <span className="truncate">{community.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col bg-white">
+          <div className="px-6 py-4 border-b border-[#e9ecef] bg-white">
+            <div className="flex items-center gap-3">
+              {selectedCommunity.isAI ? (
+                <HiChat className="w-6 h-6 text-[#228be6]" />
+              ) : (
+                <HiUserGroup className="w-6 h-6 text-[#228be6]" />
+              )}
+              <div>
+                <h1 className="text-xl font-semibold">
+                  {selectedCommunity.name}
+                </h1>
+                <p className="text-sm text-[#6c757d]">
+                  {selectedCommunity.isAI
+                    ? "Chat with AI assistant"
+                    : "Community chat room"}
                 </p>
               </div>
-            ))}
-          </div>
-          <button
-            onClick={handleCreateClick}
-            className="mt-4 w-full bg-[#7C4775] text-white py-2 rounded-lg hover:bg-[#A27A9C] transition"
-          >
-            Create New Forum
-          </button>
-        </aside>
-
-        {/* Main Content */}
-        {/* Main Content */}
-        <main className="flex-1 flex flex-col h-full bg-white shadow-md rounded-lg p-4 ml-4">
-          {/* Forum Header */}
-          <header className="mb-4">
-            <h1 className="text-2xl text-[#7C4775] font-bold">
-              {selectedForum.name}
-            </h1>
-            <p className="text-gray-600">
-              Created by: {selectedForum.createdBy}
-            </p>
-            <div className="text-sm text-gray-500">
-              <span>{selectedForum.createdAt}</span>
             </div>
-          </header>
+          </div>
 
-          {/* Comments Section */}
-          <div className="flex-1 overflow-y-auto mb-4">
-            {comments[selectedForumId].map((comment) => (
+          {/* Messages */}
+          <div className="flex-1 overflow-auto p-6 space-y-4 bg-[#f8f9fa]">
+            {(messages[selectedCommunity.id] || []).map((message, index) => (
               <div
-                key={comment.id}
-                className="p-2 pb-4 border-b border-gray-300"
+                key={index}
+                className={`flex ${
+                  message.sender === "user" ? "justify-end" : "justify-start"
+                }`}
               >
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 rounded-full overflow-hidden">
-                    <img
-                      src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnlkoa53zZB468uxslQjXZtrnqUZpa04vaVg&s`}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
+                <div className="flex flex-col gap-1">
+                  <div
+                    className={`px-4 py-2.5 rounded-lg max-w-[420px] ${
+                      message.sender === "user"
+                        ? "bg-[#228be6] text-white"
+                        : "bg-white border border-[#e9ecef]"
+                    }`}
+                  >
+                    {message.text}
                   </div>
-                  <div>
-                    <span className="font-semibold text-[#7C4775]">
-                      {comment.user}
-                    </span>
-                    {comment.messages.map((message, index) => (
-                      <p key={index} className="mt-1 text-black">
-                        {message}
-                      </p>
-                    ))}
-                  </div>
+                  <span className="text-xs text-[#6c757d] px-1">
+                    {message.timestamp}
+                  </span>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Comment Input */}
-          <div className="flex items-center space-x-2">
-            <input
-              type="text"
-              placeholder="Write a comment..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={handleInputKeyDown}
-              className="flex-1 p-2 border rounded text-black"
-            />
-            <button
-              onClick={handleSendMessage}
-              className="px-4 py-2 bg-[#7C4775] text-white rounded hover:bg-[#A27A9C] transition"
-            >
-              Send
-            </button>
-          </div>
-        </main>
-
-        {/* Popup for New Forum */}
-        {showPopup && (
-          <div className="fixed inset-0 bg-purple-800 bg-opacity-50 flex items-center justify-center">
-            <div className="bg-lavender-100 p-6 rounded shadow-lg w-96">
-              <h2 className="text-xl font-semibold mb-4 text-purple-700">
-                Create New Forum
-              </h2>
-              <input
-                type="text"
-                placeholder="Forum Name"
-                value={newForumName}
-                onChange={(e) => setNewForumName(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="w-full p-2 border rounded mb-4 text-black"
-              />
-              <div className="flex justify-end space-x-4">
+          {/* Message Input */}
+          <div className="p-6 border-t border-[#e9ecef] bg-white">
+            <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto">
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder={`Message ${selectedCommunity.name}...`}
+                  className="flex-1 px-4 py-2.5 rounded-md border border-[#e9ecef] bg-white focus:outline-none focus:border-[#228be6]"
+                />
                 <button
-                  onClick={handleCancelClick}
-                  className="px-4 py-2 bg-purple-300 rounded hover:bg-purple-400 text-black"
+                  type="submit"
+                  className="px-5 py-2.5 bg-[#228be6] text-white rounded-md hover:bg-[#1c7ed6] transition-colors"
                 >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleDoneClick}
-                  className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-                >
-                  Done
+                  <HiPaperAirplane className="w-5 h-5" />
                 </button>
               </div>
-            </div>
+            </form>
           </div>
-        )}
+        </div>
       </div>
-    </Layout>
+    </>
   );
 }
 
-export default CommunityForum;
+export default CommunityChat;

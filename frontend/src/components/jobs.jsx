@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MapPin, Briefcase, IndianRupee, ExternalLink } from "lucide-react";
+import Navbar from "./Navbar"; // Added Navbar import
 
 export default function JobsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -117,73 +118,156 @@ export default function JobsPage() {
   });
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-8 text-center text-[#7D5BA6]">
-        Job Listings
-      </h1>
+    <>
+      <Navbar /> {/* Added Navbar */}
+      <div className="container mx-auto py-8 px-4 pt-[7rem]"> {/* Added top padding for navbar */}
+        <h1 className="text-3xl font-bold mb-8 text-center text-[#7D5BA6]">
+          Job Listings
+        </h1>
 
-      {/* Search and Filters */}
-      <div className="mb-8 grid gap-4 md:grid-cols-3">
-        <div>
-          <input
-            placeholder="Search jobs..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+        {/* Search and Filters */}
+        <div className="mb-8 grid gap-4 md:grid-cols-3">
+          <div>
+            <input
+              placeholder="Search jobs..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+
+          <select
+            value={locationFilter}
+            onChange={(e) => setLocationFilter(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded"
-          />
+          >
+            <option value="">Filter by location</option>
+            <option value="all">All Locations</option>
+            {locations.map((location) => (
+              <option key={location} value={location}>
+                {location}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={skillFilter}
+            onChange={(e) => setSkillFilter(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded"
+          >
+            <option value="">Filter by skill</option>
+            <option value="all">All Skills</option>
+            {uniqueSkills.map((skill) => (
+              <option key={skill} value={skill}>
+                {skill}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <select
-          value={locationFilter}
-          onChange={(e) => setLocationFilter(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded"
-        >
-          <option value="">Filter by location</option>
-          <option value="all">All Locations</option>
-          {locations.map((location) => (
-            <option key={location} value={location}>
-              {location}
-            </option>
-          ))}
-        </select>
+        {/* Job Cards */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {filteredJobs.length > 0 ? (
+            filteredJobs.map((job, index) => (
+              <div
+                key={index}
+                className="h-full flex flex-col border border-gray-300 rounded-lg shadow-lg"
+              >
+                <div className="p-4">
+                  <h2 className="font-semibold text-xl text-[#7D5BA6]">
+                    {job.title}
+                  </h2>
+                  <p className="text-gray-600 flex items-center gap-1">
+                    <MapPin className="h-4 w-4" />
+                    {job.location}
+                  </p>
+                </div>
 
-        <select
-          value={skillFilter}
-          onChange={(e) => setSkillFilter(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded"
-        >
-          <option value="">Filter by skill</option>
-          <option value="all">All Skills</option>
-          {uniqueSkills.map((skill) => (
-            <option key={skill} value={skill}>
-              {skill}
-            </option>
-          ))}
-        </select>
-      </div>
+                <div className="flex-grow p-4">
+                  <p className="mb-4">{job.description}</p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {job.skills.map((skill, i) => (
+                      <span
+                        key={i}
+                        className="px-2 py-1 text-sm bg-[#55D6BE] text-white rounded-full"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-1 text-gray-500">
+                    <IndianRupee className="h-4 w-4" />
+                    <span>
+                      {job.payment.amount.toLocaleString()}{" "}
+                      {job.payment.currency}
+                      /year
+                    </span>
+                  </div>
+                </div>
 
-      {/* Job Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredJobs.length > 0 ? (
-          filteredJobs.map((job, index) => (
+                <div className="p-4 flex justify-between">
+                  <button
+                    className="px-4 py-2 border border-gray-300 rounded text-[#7D5BA6]"
+                    onClick={() => setSelectedJob(job)}
+                  >
+                    View Details
+                  </button>
+                  <button className="px-4 py-2 bg-[#FC6471] text-white rounded">
+                    <a
+                      href={job.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1"
+                    >
+                      Apply <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <h3 className="text-xl font-medium text-[#7D5BA6]">
+                No jobs found
+              </h3>
+              <p className="text-gray-500 mt-2">
+                Try adjusting your search or filters
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Job Details Dialog */}
+        {selectedJob && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10"
+            onClick={() => setSelectedJob(null)}
+          >
             <div
-              key={index}
-              className="h-full flex flex-col border border-gray-300 rounded-lg shadow-lg"
+              className="bg-white p-6 rounded-lg max-w-lg w-full"
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className="p-4">
-                <h2 className="font-semibold text-xl text-[#7D5BA6]">
-                  {job.title}
-                </h2>
-                <p className="text-gray-600 flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
-                  {job.location}
-                </p>
+              <h2 className="text-2xl font-bold text-[#7D5BA6]">
+                {selectedJob.title}
+              </h2>
+              <p className="text-gray-600 flex items-center gap-1">
+                <MapPin className="h-4 w-4" />
+                {selectedJob.location}
+              </p>
+
+              <div className="mt-4">
+                <h3 className="font-semibold">Responsibilities</h3>
+                <ul className="list-disc pl-5 space-y-1">
+                  {selectedJob.responsibilities.map((resp, i) => (
+                    <li key={i}>{resp}</li>
+                  ))}
+                </ul>
               </div>
 
-              <div className="flex-grow p-4">
-                <p className="mb-4">{job.description}</p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {job.skills.map((skill, i) => (
+              <div className="mt-4">
+                <h3 className="font-semibold">Required Skills</h3>
+                <div className="flex flex-wrap gap-2">
+                  {selectedJob.skills.map((skill, i) => (
                     <span
                       key={i}
                       className="px-2 py-1 text-sm bg-[#55D6BE] text-white rounded-full"
@@ -192,114 +276,35 @@ export default function JobsPage() {
                     </span>
                   ))}
                 </div>
-                <div className="flex items-center gap-1 text-gray-500">
-                  <IndianRupee className="h-4 w-4" />
-                  <span>
-                    {job.payment.amount.toLocaleString()} {job.payment.currency}
-                    /year
-                  </span>
-                </div>
               </div>
 
-              <div className="p-4 flex justify-between">
-                <button
-                  className="px-4 py-2 border border-gray-300 rounded text-[#7D5BA6]"
-                  onClick={() => setSelectedJob(job)}
-                >
-                  View Details
-                </button>
+              <div className="mt-4">
+                <h3 className="font-semibold">Compensation</h3>
+                <p className="flex items-center gap-1">
+                  <IndianRupee className="h-4 w-4" />
+                  <span>
+                    {selectedJob.payment.amount.toLocaleString()}{" "}
+                    {selectedJob.payment.currency}/year
+                  </span>
+                </p>
+              </div>
+
+              <div className="mt-4 flex justify-end">
                 <button className="px-4 py-2 bg-[#FC6471] text-white rounded">
                   <a
-                    href={job.link}
+                    href={selectedJob.link}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1"
                   >
-                    Apply <ExternalLink className="h-4 w-4" />
+                    Apply Now <ExternalLink className="h-4 w-4" />
                   </a>
                 </button>
               </div>
             </div>
-          ))
-        ) : (
-          <div className="col-span-full text-center py-12">
-            <h3 className="text-xl font-medium text-[#7D5BA6]">
-              No jobs found
-            </h3>
-            <p className="text-gray-500 mt-2">
-              Try adjusting your search or filters
-            </p>
           </div>
         )}
       </div>
-
-      {/* Job Details Dialog */}
-      {selectedJob && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10"
-          onClick={() => setSelectedJob(null)}
-        >
-          <div
-            className="bg-white p-6 rounded-lg max-w-lg w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="text-2xl font-bold text-[#7D5BA6]">
-              {selectedJob.title}
-            </h2>
-            <p className="text-gray-600 flex items-center gap-1">
-              <MapPin className="h-4 w-4" />
-              {selectedJob.location}
-            </p>
-
-            <div className="mt-4">
-              <h3 className="font-semibold">Responsibilities</h3>
-              <ul className="list-disc pl-5 space-y-1">
-                {selectedJob.responsibilities.map((resp, i) => (
-                  <li key={i}>{resp}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mt-4">
-              <h3 className="font-semibold">Required Skills</h3>
-              <div className="flex flex-wrap gap-2">
-                {selectedJob.skills.map((skill, i) => (
-                  <span
-                    key={i}
-                    className="px-2 py-1 text-sm bg-[#55D6BE] text-white rounded-full"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <h3 className="font-semibold">Compensation</h3>
-              <p className="flex items-center gap-1">
-                <IndianRupee className="h-4 w-4" />
-                <span>
-                  {selectedJob.payment.amount.toLocaleString()}{" "}
-                  {selectedJob.payment.currency}/year
-                </span>
-              </p>
-            </div>
-
-            <div className="mt-4 flex justify-end">
-              <button className="px-4 py-2 bg-[#FC6471] text-white rounded">
-                <a
-                  href={selectedJob.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1"
-                >
-                  Apply Now <ExternalLink className="h-4 w-4" />
-                </a>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </>
   );
 }

@@ -181,7 +181,7 @@ def get_events():
 
         prompt = (
             f"User knows: {knows}, Wants to be: {wantsToBe}, Hobbies: {hobbies}.\n"
-            "Based on the following syllabus, generate personalized learning events:\n"
+            "Based on the following syllabus, generate personalized learning events.Students aslo have to learn about topics in the syllubus so half of the events should be related to the syllabus :\n"
             f"this is Syllabus:\n{syllabus_text}\n\n"
             f"Output should be in format like : \n{output}\n and nothing more. Dates should be of 2025 March."
             "I just want json data nothing else as response."
