@@ -14,7 +14,7 @@ function InterestAnalyzer() {
 
   // Initialize Gemini (you'll need to set this)
   const genAI = new GoogleGenerativeAI(
-    "AIzaSyBcox681xg8Y7ty5v8uUtOT7nV_tE-g8K8"
+    "AIzaSyDOky3a0Mpbe13I6Zo4t-RZ-pt4F8NbG5I"
   );
 
   useEffect(() => {
