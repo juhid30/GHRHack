@@ -9,6 +9,7 @@ export function CalendarComponent() {
   const [showPopup, setShowPopup] = useState(false);
   const [hobbies, setHobbies] = useState("");
   const [syllabus, setSyllabus] = useState(null);
+  const [loading, setLoading] = useState(false); // State for loading
 
   useEffect(() => {
     const storedEvents = localStorage.getItem("rawEvents");
@@ -29,6 +30,8 @@ export function CalendarComponent() {
   };
 
   const fetchEventsFromGemini = async () => {
+    setLoading(true); // Set loading to true when the fetch starts
+
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return alert("User data not found!");
 
@@ -61,6 +64,8 @@ export function CalendarComponent() {
       setShowPopup(false);
     } catch (error) {
       console.error("Error fetching events:", error);
+    } finally {
+      setLoading(false); // Set loading to false after the fetch is done
     }
   };
 
@@ -110,8 +115,11 @@ export function CalendarComponent() {
                     />
                   </svg>
                   <p className="mb-2 text-sm text-gray-500">
-                    <span className="font-semibold">Click to upload</span> or
-                    drag and drop
+                    {syllabus ? (
+                      <span className="font-semibold">File uploaded</span>
+                    ) : (
+                      <span className="font-semibold">Click to upload</span>
+                    )}
                   </p>
                   <p className="text-xs text-gray-500">
                     PDF files only (Max: 5MB)
@@ -133,6 +141,18 @@ export function CalendarComponent() {
             >
               Submit
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Loading Indicator */}
+      {loading && (
+        <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div
+            className="spinner-border animate-spin inline-block w-16 h-16 border-4 border-t-transparent border-solid rounded-full text-purple-600"
+            role="status"
+          >
+            <span className="sr-only">Loading...</span>
           </div>
         </div>
       )}
