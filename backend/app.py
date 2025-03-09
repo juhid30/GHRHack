@@ -17,7 +17,7 @@ from selenium.webdriver.chrome.options import Options
 from urllib.robotparser import RobotFileParser
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins="*")
 
 app.register_blueprint(python_routes, url_prefix="/python")
 app.register_blueprint(pub_speak, url_prefix="/pub-speaker")
@@ -25,14 +25,32 @@ app.register_blueprint(anal_routes, url_prefix="/analyzer")
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-
+SERP_API_KEY = os.getenv("SERP_API_KEY")
 # Configure Google Gemini AI
 
 
 @app.route('/')
 def hello_world():
     return jsonify({'message': 'Hello, World!'})
+@app.route('/search', methods=['POST'])
+def search_serpapi():
+    data = request.get_json()  # Get JSON data from the request
+    if not data or "query" not in data:
+        return jsonify({"error": "Missing 'query' in request"}), 400
+    
+    query = data["query"]
+    params = {
+        "q": query,
+        "location": "India",
+        "hl": "en",
+        "gl": "us",
+        "google_domain": "google.com",
+        "api_key": SERP_API_KEY  # Replace with your actual API key
+    }
 
+    search = GoogleSearch(params)
+    results = search.get_dict()
+    return results
 @app.route('/generate-roadmap', methods=['POST'])
 def generate_roadmap():
     if 'syllabus' not in request.files:
