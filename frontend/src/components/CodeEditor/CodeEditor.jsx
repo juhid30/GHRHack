@@ -78,28 +78,60 @@ const CodeEditor = () => {
   }, [isDebugMode]);
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full p-4 bg-white">
       <div className="flex gap-4 mb-4">
         <button
           onClick={() => handleModeClick("DSA")}
-          className="px-4 py-2 bg-[#55D6BE] text-white rounded-md hover:bg-[#47c1a2]" // Light color button
+          className={`px-4 py-2 text-white rounded-md transition-all duration-300 ${
+            isDSAMode
+              ? "bg-[#d85981] hover:bg-[#c04e73]"
+              : "bg-[#EEB6B3] hover:bg-[#d85981]"
+          }`}
         >
           DSA Mode
         </button>
         <button
           onClick={() => handleModeClick("Debug")}
-          className="px-4 py-2 bg-[#FC6471] text-white rounded-md hover:bg-[#f05458]" // Light color button
+          className={`px-4 py-2 text-white rounded-md transition-all duration-300 ${
+            isDebugMode
+              ? "bg-[#d85981] hover:bg-[#c04e73]"
+              : "bg-[#EEB6B3] hover:bg-[#d85981]"
+          }`}
         >
           Debug Mode
         </button>
         <LanguageSelector language={language} onSelect={onSelect} />
       </div>
       <div className="flex gap-4">
-        <div className="w-1/2 border border-gray-400 rounded-md">
+        <div className="w-1/2 border-2 border-[#d85981] rounded-[1.2rem] overflow-hidden">
+          <div className="p-3 bg-[#fff2ef80] border-b border-[#EEB6B3] flex items-center">
+            <div className="p-2 rounded-md mr-3 bg-[#d85981] text-white">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M8 3L4 7l4 4" />
+                <path d="M16 3l4 4-4 4" />
+                <path d="M9 21l6-18" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-[#0e162b]">Code Editor</h3>
+          </div>
           <Editor
-            options={{ minimap: { enabled: false } }}
+            options={{ 
+              minimap: { enabled: false },
+              fontSize: 14,
+              padding: { top: 16 }
+            }}
             height="70vh"
-            theme="vs-light" // Light theme for the Monaco editor
+            theme="vs-light"
             language={language}
             onMount={onMount}
             value={value}
@@ -114,22 +146,52 @@ const CodeEditor = () => {
             isDebugMode={isDebugMode}
             dsaQuestion={isDSAMode ? dsaQuestions[currentDSAIndex] : null} // pass current DSA question
           />
-          {isDebugMode && showNextButton && (
-            <button
-              onClick={handleNextClick}
-              className="mt-4 px-4 py-2 bg-[#7D5BA6] text-white rounded-md hover:bg-[#6a4c8c]" // Light color button
-            >
-              Next
-            </button>
-          )}
-          {isDSAMode && ( // added Next button for DSAMode
-            <button
-              onClick={handleDSANext}
-              className="mt-4 ml-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-            >
-              Next
-            </button>
-          )}
+          <div className="flex space-x-4 mt-4">
+            {isDebugMode && showNextButton && (
+              <button
+                onClick={handleNextClick}
+                className="px-6 py-3 bg-[#d85981] text-white rounded-md hover:bg-[#c04e73] transition-all duration-300 flex items-center"
+              >
+                <span>Next Challenge</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="ml-2"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </button>
+            )}
+            {isDSAMode && (
+              <button
+                onClick={handleDSANext}
+                className="px-6 py-3 bg-[#d85981] text-white rounded-md hover:bg-[#c04e73] transition-all duration-300 flex items-center"
+              >
+                <span>Next Problem</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="ml-2"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

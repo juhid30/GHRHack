@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HiPlus, HiPaperAirplane, HiChat, HiUserGroup } from "react-icons/hi";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import axios from "axios";
 import Navbar from "./Navbar";
 
 const API_KEY = "AIzaSyBcox681xg8Y7ty5v8uUtOT7nV_tE-g8K8"; // Replace with your actual API key
@@ -26,17 +27,59 @@ function CommunityChat() {
     }
   };
 
+  // Enhanced check for mental health issues
   const checkMentalHealthIssues = (text) => {
-    const keywords = [
+    const vulnerableKeywords = [
       /suicide/i,
-      /depression/i,
-      /anxiety/i,
-      /self[- ]?harm/i,
-      /mental health/i,
-      /hopeless/i,
       /kill myself/i,
+      /end my life/i,
+      /don'?t want to live/i,
+      /want to die/i,
+      /severe depression/i,
+      /self[- ]?harm/i,
+      /cutting myself/i,
+      /hopeless/i,
+      /can'?t go on/i,
+      /no reason to live/i,
+      /no one cares/i,
+      /better off without me/i,
+      /goodbye forever/i,
+      /final note/i,
+      /ending it all/i,
     ];
-    return keywords.some((regex) => regex.test(text));
+    
+    return vulnerableKeywords.some((regex) => regex.test(text));
+  };
+
+  // Handler for alerting and redirecting
+  const handleVulnerableContent = async () => {
+    setShowAlert(true);
+    
+    try {
+      // Send email alert
+      const response = await axios.get(
+        `https://python-server-1.vercel.app/send-email`,
+        {
+          params: {
+            receiver_email: "electronjash@gmail.com",
+            subject: `YOUR CHILD IS VULNERABLE!`,
+            message: `YOUR CHILD JUST TYPED SOMETHING THAT WAS FLAGGED AS HARMFUL TO HIMSELF BY OUR SYSTEMS. PLEASE CHECK ON HIM/HER. 
+NOTE: THIS MAY BE A FALSE ALARM DUE TO ACCURACY ISSUES, BUT WE DO REQUEST YOU TO PLEASE CHECK UP ON HIM/HER BECAUSE EVERY CHILD IS IMPORTANT TO US.`,
+          },
+        }
+      );
+      
+      if (response.status !== 200) {
+        console.error("Failed to send email alert");
+      }
+    } catch (error) {
+      console.error("Error sending email alert:", error);
+    }
+    
+    // Set timer for redirect
+    setTimeout(() => {
+      window.location.href = "https://telemanas.mohfw.gov.in/home";
+    }, 5000);
   };
 
   const generateChatResponse = async (userMessage) => {
@@ -45,11 +88,6 @@ function CommunityChat() {
       const prompt = `You are an empathetic AI assistant. Respond to the following message in a helpful and friendly manner:\n"${userMessage}"`;
       const result = await model.generateContent(prompt);
       const aiResponse = result.response.text();
-      if (checkMentalHealthIssues(aiResponse)) {
-        window.alert(
-          "It appears the conversation touches on sensitive mental health topics. Please consider seeking professional help if needed."
-        );
-      }
       return aiResponse;
     } catch (error) {
       console.error(
@@ -71,10 +109,17 @@ function CommunityChat() {
   const [newCommunityName, setNewCommunityName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
+    
+    // Check for vulnerable content before sending
+    if (checkMentalHealthIssues(newMessage)) {
+      handleVulnerableContent();
+    }
+    
     const communityId = selectedCommunity.id;
     const userMsg = {
       text: newMessage,
@@ -125,6 +170,23 @@ function CommunityChat() {
 
   return (
     <>
+      {/* Alert Popup */}
+      {showAlert && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
+          <div className="bg-white p-8 rounded-lg max-w-md mx-4 text-center shadow-xl">
+            <h2 className="text-2xl font-bold text-red-600 mb-4">
+              WE CARE ABOUT YOU
+            </h2>
+            <p className="text-xl font-semibold">
+              You're not alone. We're connecting you with support resources.
+            </p>
+            <p className="mt-4 text-gray-600">
+              Redirecting in 5 seconds...
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Navbar at the top */}
       <div className="fixed top-0 w-full z-10">
         <Navbar />
@@ -171,7 +233,7 @@ function CommunityChat() {
                   className={`w-full text-left px-3 py-2.5 rounded-md flex items-center gap-3 transition-colors ${
                     selectedCommunity.id === community.id
                       ? "bg-[#CD6D8B] text-white"
-                      : "hover:bg-[#20397F] text-[#20397F]"
+                      : "hover:bg-[#20397F] hover:text-white text-[#20397F]"
                   }`}
                 >
                   {community.isAI ? (

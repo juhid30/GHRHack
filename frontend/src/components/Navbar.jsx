@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -21,7 +22,7 @@ const Navbar = () => {
     getUser();
   }, []);
 
-  const menuItems = ["Study", "Community", "Journal", "Resume", "Calendar"];
+  const menuItems = ["Study", "Community", "Journal", "Resume", "Calendar", "Upskill"];
 
   return (
     <motion.nav

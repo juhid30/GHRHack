@@ -17,6 +17,7 @@ import VideoPlayer from "./components/VideoPlayer";
 import InterestAnalyzer from "./components/InterestAnalyzer";
 import JobsPage from "./components/jobs";
 import { Toaster } from "react-hot-toast";
+import UpskillingHome from "./components/Upskill";
 
 function App() {
   return (
@@ -41,6 +42,8 @@ function App() {
         <Route path="/roadmap" element={<RoadmapGenerator />} />
         <Route path="/extension" element={<InterestAnalyzer />} />
         <Route path="/jobs" element={<JobsPage />} />
+        <Route path="/upskill" element={<UpskillingHome />} />
+
       </Routes>
       <Toaster />
     </>
