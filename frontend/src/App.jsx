@@ -9,11 +9,10 @@ import Journal from "./components/Journal";
 import Calendar from "./components/Calendar";
 import Dashboard from "./components/Dashboard";
 import CodingPlatform from "./components/CodingPlatform";
-// import VideoPlayer from "./components/VideoPlayer";
 import ResumeViewer from "./components/ResumeViewer";
-// import Layout from "./components/Layout";
 import LandingPage from "./pages/LandingPage";
 import ProfilePage from "./components/profile";
+import VideoPlayer from "./components/VideoPlayer";
 
 function App() {
   return (

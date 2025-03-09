@@ -444,7 +444,7 @@ const Journal = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex-1 flex flex-col items-center justify-center gap-4"
+                  className="flex-1 flex flex-col items-center justify-center gap-4 mt-[10rem]"
                 >
                   <PenLine size={48} className="text-neutral-300" />
                   <p className="text-neutral-600">
