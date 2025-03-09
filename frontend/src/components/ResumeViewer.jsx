@@ -11,14 +11,12 @@ import {
   FiEye,
   FiBriefcase,
 } from "react-icons/fi";
-import { useNavigate } from "react-router-dom"; // Add this import
-import Navbar from "./Navbar"; // Added Navbar import
+import { useNavigate } from "react-router-dom";
+import Navbar from "./Navbar";
 
 const RESUME_TYPES = {
   fresher: {
     icon: FiUser,
-    title: "Fresher",
-    description: "Perfect for those just starting their career",
     title: "Fresher",
     description: "Perfect for those just starting their career",
     templates: [
@@ -28,32 +26,13 @@ const RESUME_TYPES = {
         path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/fresher1.pdf?alt=media&token=1080a625-5665-4e68-8e1e-6c36183ab447",
         description:
           "Minimalist design perfect for highlighting academic achievements and internships",
-      {
-        id: 1,
-        name: "Clean Start 1",
-        path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/fresher1.pdf?alt=media&token=1080a625-5665-4e68-8e1e-6c36183ab447",
-        description:
-          "Minimalist design perfect for highlighting academic achievements and internships",
       },
       {
         id: 2,
         name: "Clean Start 2",
         path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/fresher2.pdf?alt=media&token=b2539471-609a-4bf0-9939-9132f326f8b2",
         description: "Modern layout emphasizing skills and project experience",
-      {
-        id: 2,
-        name: "Clean Start 2",
-        path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/fresher2.pdf?alt=media&token=b2539471-609a-4bf0-9939-9132f326f8b2",
-        description: "Modern layout emphasizing skills and project experience",
       },
-      {
-        id: 3,
-        name: "Clean Start 3",
-        path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/fresher3.pdf?alt=media&token=cdeb8e52-d6f2-417e-8aa9-6e76baa1aeca",
-        description:
-          "Classic format ideal for traditional industries and academic positions",
-      },
-    ],
       {
         id: 3,
         name: "Clean Start 3",
@@ -67,8 +46,6 @@ const RESUME_TYPES = {
     icon: FiCode,
     title: "Intermediate",
     description: "2-5 years of experience templates",
-    title: "Intermediate",
-    description: "2-5 years of experience templates",
     templates: [
       {
         id: 4,
@@ -76,12 +53,6 @@ const RESUME_TYPES = {
         path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/medium1.pdf?alt=media&token=8228fb6f-8c2a-4b55-8094-f6497b96876b",
         description:
           "Balanced layout showcasing professional growth and key achievements",
-      {
-        id: 4,
-        name: "Intern 1",
-        path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/medium1.pdf?alt=media&token=8228fb6f-8c2a-4b55-8094-f6497b96876b",
-        description:
-          "Balanced layout showcasing professional growth and key achievements",
       },
       {
         id: 5,
@@ -89,21 +60,7 @@ const RESUME_TYPES = {
         path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/medium1.pdf?alt=media&token=8228fb6f-8c2a-4b55-8094-f6497b96876b",
         description:
           "Technical focus with emphasis on project contributions and skills",
-      {
-        id: 5,
-        name: "Intern 2",
-        path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/medium1.pdf?alt=media&token=8228fb6f-8c2a-4b55-8094-f6497b96876b",
-        description:
-          "Technical focus with emphasis on project contributions and skills",
       },
-      {
-        id: 6,
-        name: "Intern 3",
-        path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/medium3.pdf?alt=media&token=802dfb74-75d5-45e0-b178-09786146c1ed",
-        description:
-          "Dynamic design highlighting leadership and team collaboration",
-      },
-    ],
       {
         id: 6,
         name: "Intern 3",
@@ -117,8 +74,6 @@ const RESUME_TYPES = {
     icon: FiAward,
     title: "Professional",
     description: "Senior level resume templates",
-    title: "Professional",
-    description: "Senior level resume templates",
     templates: [
       {
         id: 7,
@@ -126,12 +81,6 @@ const RESUME_TYPES = {
         path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/pro1.pdf?alt=media&token=b313fdfd-fcba-4934-95b0-a288c6792c18",
         description:
           "Executive style emphasizing strategic impact and team leadership",
-      {
-        id: 7,
-        name: "SDE 1",
-        path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/pro1.pdf?alt=media&token=b313fdfd-fcba-4934-95b0-a288c6792c18",
-        description:
-          "Executive style emphasizing strategic impact and team leadership",
       },
       {
         id: 8,
@@ -139,22 +88,7 @@ const RESUME_TYPES = {
         path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/pro2.pdf?alt=media&token=b313fdfd-fcba-4934-95b0-a288c6792c18",
         description:
           "Results-driven layout focusing on major achievements and innovations",
-      {
-        id: 8,
-        name: "SDE 1 New",
-        path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/pro2.pdf?alt=media&token=b313fdfd-fcba-4934-95b0-a288c6792c18",
-        description:
-          "Results-driven layout focusing on major achievements and innovations",
       },
-      {
-        id: 6,
-        name: "SDE 2",
-        path: "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/pro3.pdf?alt=media&token=b313fdfd-fcba-4934-95b0-a288c6792c18",
-        description:
-          "Advanced template for showcasing architectural decisions and system design",
-      },
-    ],
-  },
       {
         id: 6,
         name: "SDE 2",
@@ -167,10 +101,9 @@ const RESUME_TYPES = {
 };
 
 export default function ResumeViewer() {
-  const navigate = useNavigate(); // Add this hook
+  const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("fresher");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [jobRole, setJobRole] = useState("");
   const [jobRole, setJobRole] = useState("");
   const [resumeFile, setResumeFile] = useState(null);
   const [analysisResult, setAnalysisResult] = useState(null);
@@ -217,7 +150,6 @@ export default function ResumeViewer() {
       const data = await response.json();
       setAnalysisResult(data);
     } catch (error) {
-      console.error("Error analyzing resume:", error);
       console.error("Error analyzing resume:", error);
     }
   };
