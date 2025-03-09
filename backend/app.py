@@ -7,6 +7,9 @@ from bs4 import BeautifulSoup
 import google.generativeai as genai
 from serpapi import GoogleSearch
 
+from python import python_routes
+from public_speaking import pub_speak
+from analyzer import anal_routes
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -14,19 +17,40 @@ from selenium.webdriver.chrome.options import Options
 from urllib.robotparser import RobotFileParser
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins="*")
 
+app.register_blueprint(python_routes, url_prefix="/python")
+app.register_blueprint(pub_speak, url_prefix="/pub-speaker")
+app.register_blueprint(anal_routes, url_prefix="/analyzer")
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-
+SERP_API_KEY = os.getenv("SERP_API_KEY")
 # Configure Google Gemini AI
 
 
 @app.route('/')
 def hello_world():
     return jsonify({'message': 'Hello, World!'})
+@app.route('/search', methods=['POST'])
+def search_serpapi():
+    data = request.get_json()  # Get JSON data from the request
+    if not data or "query" not in data:
+        return jsonify({"error": "Missing 'query' in request"}), 400
+    
+    query = data["query"]
+    params = {
+        "q": query,
+        "location": "India",
+        "hl": "en",
+        "gl": "us",
+        "google_domain": "google.com",
+        "api_key": SERP_API_KEY  # Replace with your actual API key
+    }
 
+    search = GoogleSearch(params)
+    results = search.get_dict()
+    return results
 @app.route('/generate-roadmap', methods=['POST'])
 def generate_roadmap():
     if 'syllabus' not in request.files:
@@ -134,22 +158,22 @@ def generate_roadmap():
         os.remove(file_path)  # Clean up uploaded file
 
 
-@app.route('/save-audio', methods=['POST'])
-def save_audio():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part in the request'}), 400
+# @app.route('/save-audio', methods=['POST'])
+# def save_audio():
+#     if 'file' not in request.files:
+#         return jsonify({'error': 'No file part in the request'}), 400
 
-    file = request.files['file']
+#     file = request.files['file']
 
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
+#     if file.filename == '':
+#         return jsonify({'error': 'No selected file'}), 400
 
-    if file:
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)  # Save the file locally
+#     if file:
+#         filename = secure_filename(file.filename)
+#         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+#         file.save(filepath)  # Save the file locally
 
-        return jsonify({'fileUrl': f'/temp/{filename}'})
+#         return jsonify({'fileUrl': f'/temp/{filename}'})
 
 
 @app.route("/get-events", methods=["POST"])

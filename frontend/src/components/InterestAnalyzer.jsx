@@ -23,7 +23,7 @@ function InterestAnalyzer() {
 
   const fetchUrls = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/get-urls");
+      const response = await axios.get("http://127.0.0.1:5002/get-urls");
       // Create a new array with just the data we need
       const sanitizedUrls = response.data.map((item) => ({
         url: item.url,
@@ -69,7 +69,7 @@ function InterestAnalyzer() {
   const searchArticles = async (topic) => {
     setSelectedTopic(topic);
     try {
-      const response = await axios.post("http://127.0.0.1:5001/search", {
+      const response = await axios.post("http://127.0.0.1:5000/search", {
         query: `${topic} news articles latest`,
       });
       console.log(response.data["organic_results"]);
@@ -86,7 +86,9 @@ function InterestAnalyzer() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar /> {/* Added Navbar */}
-      <div className="container mx-auto px-4 py-12 pt-20"> {/* Increased top padding for sleek spacing */}
+      <div className="container mx-auto px-4 py-12 pt-20">
+        {" "}
+        {/* Increased top padding for sleek spacing */}
         <div className="flex flex-col md:flex-row gap-8">
           {/* Topics Section */}
           <motion.div

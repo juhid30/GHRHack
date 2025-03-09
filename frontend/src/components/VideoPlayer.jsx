@@ -102,9 +102,13 @@ const VideoPlayer = () => {
     formData.append("file", file);
 
     try {
-      await axios.post("http://localhost:5000/save-audio", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await axios.post(
+        "http://127.0.0.1:5000//pub-speaker/save-audio",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
     } catch (error) {
       console.error("Error saving recording:", error);
     }

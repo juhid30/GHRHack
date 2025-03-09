@@ -80,10 +80,13 @@ const EmotionDetector = () => {
       const formData = new FormData();
       formData.append("image", blob, "frame.jpg");
       try {
-        const response = await fetch("http://127.0.0.1:5000/detect_emotion", {
-          method: "POST",
-          body: formData,
-        });
+        const response = await fetch(
+          "http://127.0.0.1:5000/python/detect_emotion",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
         const data = await response.json();
         setEmotion(data.emotion || "No Face Detected");
       } catch (error) {
@@ -121,7 +124,7 @@ const SpotifyPlayer = () => {
     setError("");
     try {
       const response = await fetch(
-        "http://127.0.0.1:5000/recommend?emotion=Happy"
+        "http://127.0.0.1:5000/python/recommend?emotion=Happy"
       );
       const data = await response.json();
 

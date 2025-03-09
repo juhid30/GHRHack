@@ -142,7 +142,7 @@ export default function ResumeViewer() {
     formData.append("job_role", jobRole);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/upload", {
+      const response = await fetch("http://127.0.0.1:5000/analyzer/upload", {
         method: "POST",
         body: formData,
       });
