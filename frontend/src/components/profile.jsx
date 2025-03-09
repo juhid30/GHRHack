@@ -757,18 +757,17 @@ export default function ProfilePage() {
               <button
                 className="w-full bg-[#CD6D8B] text-white rounded-lg py-3 hover:bg-[#20397F] transition-all duration-300 font-medium"
                 onClick={() => {
-                  const link = document.createElement("a");
-                  link.href = "../assets/WEEKLYREPORT.pdf";
-                  link.setAttribute("download", "WEEKLYREPORT.pdf");
-                  link.style.display = "none";
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
+                  const pdfUrl =
+                    "https://firebasestorage.googleapis.com/v0/b/librarymanagementmpr.appspot.com/o/WEEKLYREPORT.pdf?alt=media&token=58ec4f07-ce16-4a88-aec9-5c404b211d43";
+
+                  // Open the PDF in a new tab directly
+                  window.open(pdfUrl, "_blank");
                 }}
               >
                 <Download className="h-5 w-5 inline-block mr-2" />
-                Download Weekly Report
+                View Weekly Report
               </button>
+
               <RewardsGraph />
             </div>
 

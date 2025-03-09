@@ -138,41 +138,12 @@ export function CalendarComponent() {
               <label className="block text-lg font-medium text-[#20397F] mb-2">
                 Upload Your Syllabus
               </label>
-              <div
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-[#F6D8D1] transition-colors ${
-                  isDragging
-                    ? "border-[#CD6D8B]"
-                    : "border-[#EEB6B3] hover:border-[#CD6D8B]"
-                }`}
-              >
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <FiUpload className="w-12 h-12 mb-3 text-[#20397F]" />
-                  <p className="mb-2 text-lg text-[#20397F]">
-                    {syllabus ? (
-                      <span className="font-semibold">
-                        File uploaded: {syllabus.name}
-                      </span>
-                    ) : (
-                      <span className="font-semibold">
-                        Click to upload or drag and drop
-                      </span>
-                    )}
-                  </p>
-                  <p className="text-base text-[#20397F]">
-                    PDF files only (Max: 5MB)
-                  </p>
-                </div>
-                <input
-                  id="dropzone-file"
-                  type="file"
-                  accept="application/pdf"
-                  className="hidden"
-                  onChange={handleSyllabusUpload}
-                />
-              </div>
+              <input
+                type="file"
+                accept=".pdf"
+                className="border border-[#EEB6B3] p-3 w-full rounded-lg focus:ring-2 focus:ring-[#CD6D8B] focus:border-[#CD6D8B] bg-[#F6D8D1] text-[#20397F] text-lg outline-none"
+                onChange={handleSyllabusUpload}
+              />
             </div>
 
             <button
