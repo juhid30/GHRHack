@@ -1,7 +1,21 @@
 import { useEffect, useState } from "react";
 import { Award, Coins, Download, Mail, Code2 } from "lucide-react";
+import Navbar from "./Navbar"; // Added Navbar import
+import { Bar, Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+} from 'chart.js';
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, LineElement, PointElement);
 
-// Profile Section
+// Profile Header Component
 export function ProfileHeader() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,40 +28,24 @@ export function ProfileHeader() {
     const resume = "https://example.com/resume.pdf";
     const wantsToBe = "Software Engineer";
 
-    setProfile({
-      email,
-      name,
-      profilePic,
-      resume,
-      wantsToBe,
-    });
+    setProfile({ email, name, profilePic, resume, wantsToBe });
     setLoading(false);
   }, []);
 
-  if (loading) {
-    return (
-      <div className="h-40 flex items-center justify-center">
-        Loading profile...
-      </div>
-    );
-  }
+  if (loading) return <div className="h-40 flex items-center justify-center">Loading profile...</div>;
 
   return (
     <div className="w-full bg-white shadow-md rounded-lg p-6">
-      <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
+      <div className="flex flex-col md:flex-row items-center gap-6">
         <div className="w-32 h-32 border-2 border-[#55D6BE] rounded-full overflow-hidden">
-          <img
-            src={profile.profilePic}
-            alt={profile.name}
-            className="w-full h-full object-cover"
-          />
+          <img src={profile.profilePic} alt={profile.name} className="w-full h-full object-cover" />
         </div>
-        <div className="flex-1 space-y-4 text-center md:text-left">
+        <div className="flex-1 text-center md:text-left">
           <h1 className="text-3xl font-bold">{profile.name}</h1>
           <p className="text-xl text-[#7D5BA6]">{profile.wantsToBe}</p>
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 mt-4 justify-center md:justify-start">
             <div className="flex items-center gap-2">
-              <Mail className="h-4 w-4 text-muted-foreground" />
+              <Mail className="h-4 w-4" />
               <span>{profile.email}</span>
             </div>
             <a
@@ -56,7 +54,7 @@ export function ProfileHeader() {
               className="bg-[#55D6BE] text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-[#7D5BA6]"
             >
               <Download className="h-4 w-4" />
-              Download Resume
+              <span>Download Resume</span>
             </a>
           </div>
         </div>
@@ -69,169 +67,190 @@ export function ProfileHeader() {
 export function SkillsSection() {
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    // Dummy skills data
     const skillsArray = ["JavaScript", "React", "Node.js", "CSS"];
-
     setSkills(skillsArray);
     setLoading(false);
   }, []);
 
-  if (loading) {
-    return (
-      <div className="h-40 flex items-center justify-center">
-        Loading skills...
-      </div>
-    );
-  }
+  if (loading) return <div className="h-40 flex items-center justify-center">Loading skills...</div>;
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
       <div className="flex items-center gap-2">
         <Code2 className="h-5 w-5 text-[#7D5BA6]" />
-        <h2 className="text-xl font-semibold">Skills & Expertise</h2>
+        <h2 className="text-xl font-semibold">Skills &amp; Expertise</h2>
       </div>
       <div className="flex flex-wrap gap-2 mt-4">
-        {skills.length > 0 ? (
-          skills.map((skill, index) => (
-            <span
-              key={index}
-              className="bg-[#55D6BE] text-white px-4 py-2 rounded-lg text-sm"
-            >
-              {skill}
-            </span>
-          ))
-        ) : (
-          <p className="text-muted-foreground">No skills listed</p>
-        )}
+        {skills.length > 0 ? skills.map((skill, index) => (
+          <span key={index} className="bg-[#55D6BE] text-white px-4 py-2 rounded-lg text-sm">
+            {skill}
+          </span>
+        )) : <p>No skills listed</p>}
       </div>
     </div>
   );
 }
 
-// Coins Chart Section
-export function CoinsChart({ data }) {
+// Dummy Graph components using placeholders
+export function RewardsGraph() {
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-xl font-semibold">Coins Chart</h2>
-      <div className="mt-4 relative h-60">
-        <div className="absolute top-0 left-0 w-full h-full">
-          <div className="flex justify-between">
-            {data.map((monthData, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div
-                  className="w-6 h-24 bg-[#55D6BE] rounded-t-lg"
-                  style={{ height: `${monthData.earned}%` }}
-                ></div>
-                <div className="text-xs text-[#7D5BA6]">{monthData.month}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+      <h2 className="text-xl font-semibold mb-4">Rewards Graph</h2>
+      <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+        <span className="text-gray-600">[Dummy Rewards Graph]</span>
       </div>
     </div>
   );
 }
 
-// Rewards Chart Section
-export function RewardsChart({ data }) {
-  return (
-    <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-xl font-semibold">Rewards Chart</h2>
-      <div className="mt-4 relative h-60">
-        <div className="absolute top-0 left-0 w-full h-full">
-          <div className="flex justify-between">
-            {data.map((rewardData, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div
-                  className="w-6 h-24 bg-[#FC6471] rounded-t-lg"
-                  style={{ height: `${rewardData.amount}%` }}
-                ></div>
-                <div className="text-xs text-[#7D5BA6]">{rewardData.date}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
+
+// Updated Weekly Challenges Component as a clickable table
+export function WeeklyChallenges() {
+  const dummyChallenges = [
+    "Complete 5 coding challenges",
+    "Attend one webinar",
+    "Read a tech article",
+    "Submit one project update"
+  ];
+  const [challenges, setChallenges] = useState(
+    dummyChallenges.map((challenge) => ({ text: challenge, done: false }))
   );
-}
 
-// Graph Section (Performance Metrics)
-export function GraphSection() {
-  const [data, setData] = useState({
-    rewards: [],
-    coins: [],
-  });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Dummy chart data
-    const mockData = getMockData();
-    setData(mockData);
-    setLoading(false);
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="h-40 flex items-center justify-center">
-        Loading charts...
-      </div>
+  const toggleChallenge = (index) => {
+    setChallenges((prev) =>
+      prev.map((ch, i) => (i === index ? { ...ch, done: !ch.done } : ch))
     );
-  }
+  };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-xl font-semibold">Performance Metrics</h2>
-      <div className="mt-4">
-        <div className="flex justify-between">
-          <button className="bg-[#55D6BE] text-white px-4 py-2 rounded-lg">
-            Rewards
-          </button>
-          <button className="bg-[#FC6471] text-white px-4 py-2 rounded-lg">
-            Coins
-          </button>
-        </div>
-        <div className="mt-4">
-          <div className="h-60">
-            <RewardsChart data={data.rewards} />
-          </div>
-          <div className="h-60 mt-6">
-            <CoinsChart data={data.coins} />
-          </div>
-        </div>
-      </div>
+    <div className="bg-white shadow-md rounded-lg p-6 overflow-hidden">
+      <h2 className="text-xl font-semibold mb-4">Weekly Challenges</h2>
+      <table className="w-full">
+        <tbody>
+          {challenges.map((challenge, index) => (
+            <tr
+              key={index}
+              className="border-b last:border-0 cursor-pointer hover:bg-gray-50"
+              onClick={() => toggleChallenge(index)}
+            >
+              <td className="p-3">
+                <input
+                  type="checkbox"
+                  readOnly
+                  checked={challenge.done}
+                  className="mr-2"
+                />
+                <span className={challenge.done ? "line-through text-gray-500" : ""}>
+                  {challenge.text}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
 
-function getMockData() {
-  return {
-    rewards: [
-      { date: "2025-01-01", amount: 70 },
-      { date: "2025-02-01", amount: 60 },
-      { date: "2025-03-01", amount: 80 },
-    ],
-    coins: [
-      { month: "Jan", earned: 60, spent: 20 },
-      { month: "Feb", earned: 50, spent: 30 },
-      { month: "Mar", earned: 90, spent: 40 },
+// New Bar Graph component using dummy data
+export function BarGraph() {
+  const data = {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May"],
+    datasets: [
+      {
+        label: 'Sales',
+        data: [12, 19, 3, 5, 2],
+        backgroundColor: 'rgba(75,192,192,0.6)',
+      },
     ],
   };
+  const options = { maintainAspectRatio: false };
+  return (
+    <div className="bg-white shadow-md rounded-lg p-6">
+      <h2 className="text-xl font-semibold mb-4">Bar Graph</h2>
+      <div className="w-full h-48">
+        <Bar data={data} options={options} />
+      </div>
+    </div>
+  );
 }
 
-// Main Profile Page
+// New Line Graph component using dummy data
+export function LineGraph() {
+  const data = {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May"],
+    datasets: [
+      {
+        label: "Visitors",
+        data: [5, 10, 15, 10, 20],
+        fill: false,
+        borderColor: 'rgba(153,102,255,1)',
+        tension: 0.3,
+      },
+    ],
+  };
+  const options = { maintainAspectRatio: false };
+  return (
+    <div className="bg-white shadow-md rounded-lg p-6">
+      <h2 className="text-xl font-semibold mb-4">Line Graph</h2>
+      <div className="w-full h-48">
+        <Line data={data} options={options} />
+      </div>
+    </div>
+  );
+}
+
+// New Color Graph component (bar chart with red, yellow, green colors)
+export function ColorGraph() {
+  const data = {
+    labels: ["Task 1", "Task 2", "Task 3"],
+    datasets: [
+      {
+        label: "Progress",
+        data: [30, 50, 80],
+        backgroundColor: ["red", "yellow", "green"],
+      },
+    ],
+  };
+  const options = { maintainAspectRatio: false };
+  return (
+    <div className="bg-white shadow-md rounded-lg p-6">
+      <h2 className="text-xl font-semibold mb-4">Progress Graph</h2>
+      <div className="w-full h-48">
+        <Bar data={data} options={options} />
+      </div>
+    </div>
+  );
+}
+
+// Main revamped Profile Page with Navbar added
 export default function ProfilePage() {
   return (
-    <main className="container mx-auto py-8 px-4">
-      <div className="grid gap-8">
-        <ProfileHeader />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <SkillsSection />
-          <GraphSection />
+    <>
+      <Navbar />
+      <main className="container mx-auto pt-16 p-4">
+        <div className="grid gap-8">
+          <ProfileHeader />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+              <SkillsSection />
+              <RewardsGraph />
+
+              {/* New row for additional charts */}
+              <BarGraph />
+              <LineGraph />
+            </div>
+            <div>
+              <WeeklyChallenges />
+              {/* Placing the ColorGraph below WeeklyChallenges */}
+              <div className="mt-8">
+                <ColorGraph />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
