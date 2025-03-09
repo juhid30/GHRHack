@@ -25,11 +25,10 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         {/* <Route index element={<Home />} /> */}
-
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<ProfilePage />} />
-        {/* <Route path="/yoga" element={<YogaRedirect />} />{" "} */}
+        <Route path="/yoga" element={<YogaRedirect />} />{" "}
         <Route path="/public-speaking" element={<VideoPlayer />} />
         {/* <Route path="/emotion" element={<EmotionDetector />} /> */}
         <Route path="/study" element={<Dashboard />} />
@@ -43,7 +42,6 @@ function App() {
         <Route path="/extension" element={<InterestAnalyzer />} />
         <Route path="/jobs" element={<JobsPage />} />
         <Route path="/upskill" element={<UpskillingHome />} />
-
       </Routes>
       <Toaster />
     </>

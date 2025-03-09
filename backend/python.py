@@ -35,17 +35,13 @@ def get_spotify_access_token():
     response = requests.post(url, headers=headers, data=data, auth=(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET))
     return response.json().get("access_token")
 
-# Function to recommend songs based on emotion
 def recommend_songs(emotion, top_n=5):
-    emotion = emotion.capitalize()  # Ensure case consistency
+    emotion = emotion.capitalize()  
     
-    # Filter songs matching the emotion
     recommended_songs = data[data["Initial Emotion"] == emotion]["Song Title"]
     
-    # Shuffle and return top N
     return recommended_songs.sample(frac=1).head(top_n).tolist() if not recommended_songs.empty else []
 
-# Function to get Spotify Track ID
 def search_song_on_spotify(song_name):
     token = get_spotify_access_token()
     search_url = f"https://api.spotify.com/v1/search?q={song_name}&type=track&limit=1"
@@ -66,7 +62,6 @@ def detect_emotion():
         np_img = np.frombuffer(file.read(), np.uint8)
         frame = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
 
-        # Analyze emotion
         predictions = DeepFace.analyze(frame, actions=["emotion"], enforce_detection=False)
         dominant_emotion = predictions[0]["dominant_emotion"] if predictions else "No Face Detected"
 
