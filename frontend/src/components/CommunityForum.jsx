@@ -70,6 +70,7 @@ function CommunityChat() {
   const [newMessage, setNewMessage] = useState("");
   const [newCommunityName, setNewCommunityName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
+  const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -130,18 +131,20 @@ function CommunityChat() {
       </div>
 
       {/* Main content starts below the navbar */}
-      <div className="flex h-screen pt-16 bg-[#f8f9fa]">
+      <div className="flex h-screen pt-16 bg-[#fffbfb]">
         {/* Sidebar */}
-        <div className="w-72 border-r border-[#e9ecef] bg-white">
-          <div className="p-4 border-b border-[#e9ecef]">
-            <h2 className="text-xl font-semibold mb-1">Communities</h2>
-            <p className="text-sm text-[#6c757d]">Join or create a community</p>
+        <div className="w-72 border-r border-[#20397F] bg-[#fffbfb]">
+          <div className="p-4 border-b border-[#20397F]">
+            <h2 className="text-xl font-semibold mb-1 text-[#20397F]">
+              Communities
+            </h2>
+            <p className="text-sm text-[#20397F]">Join or create a community</p>
           </div>
 
           <div className="p-4">
             <button
               onClick={() => setIsCreating(true)}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 mb-4 bg-[#228be6] text-white rounded-md hover:bg-[#1c7ed6] transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 mb-4 bg-[#CD6D8B] text-white rounded-md hover:bg-[#b55a75] transition-colors"
             >
               <HiPlus className="w-5 h-5" />
               <span>New Community</span>
@@ -154,7 +157,7 @@ function CommunityChat() {
                   value={newCommunityName}
                   onChange={(e) => setNewCommunityName(e.target.value)}
                   placeholder="Enter community name..."
-                  className="w-full px-3 py-2 rounded-md border border-[#e9ecef] bg-white focus:outline-none focus:border-[#228be6]"
+                  className="w-full px-3 py-2 rounded-md border border-[#20397F] bg-white focus:outline-none focus:border-[#CD6D8B]"
                   onKeyDown={(e) => e.key === "Enter" && createCommunity()}
                 />
               </div>
@@ -167,8 +170,8 @@ function CommunityChat() {
                   onClick={() => setSelectedCommunity(community)}
                   className={`w-full text-left px-3 py-2.5 rounded-md flex items-center gap-3 transition-colors ${
                     selectedCommunity.id === community.id
-                      ? "bg-[#228be6] text-white"
-                      : "hover:bg-[#f1f3f5]"
+                      ? "bg-[#CD6D8B] text-white"
+                      : "hover:bg-[#20397F] text-[#20397F]"
                   }`}
                 >
                   {community.isAI ? (
@@ -185,18 +188,18 @@ function CommunityChat() {
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col bg-white">
-          <div className="px-6 py-4 border-b border-[#e9ecef] bg-white">
+          <div className="px-6 py-4 border-b border-[#20397F] bg-[#fffbfb]">
             <div className="flex items-center gap-3">
               {selectedCommunity.isAI ? (
-                <HiChat className="w-6 h-6 text-[#228be6]" />
+                <HiChat className="w-6 h-6 text-[#20397F]" />
               ) : (
-                <HiUserGroup className="w-6 h-6 text-[#228be6]" />
+                <HiUserGroup className="w-6 h-6 text-[#20397F]" />
               )}
               <div>
-                <h1 className="text-xl font-semibold">
+                <h1 className="text-xl font-semibold text-[#20397F]">
                   {selectedCommunity.name}
                 </h1>
-                <p className="text-sm text-[#6c757d]">
+                <p className="text-sm text-[#20397F]">
                   {selectedCommunity.isAI
                     ? "Chat with AI assistant"
                     : "Community chat room"}
@@ -206,7 +209,7 @@ function CommunityChat() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-auto p-6 space-y-4 bg-[#f8f9fa]">
+          <div className="flex-1 overflow-auto p-6 space-y-4 bg-[#fffbfb]">
             {(messages[selectedCommunity.id] || []).map((message, index) => (
               <div
                 key={index}
@@ -218,13 +221,21 @@ function CommunityChat() {
                   <div
                     className={`px-4 py-2.5 rounded-lg max-w-[420px] ${
                       message.sender === "user"
-                        ? "bg-[#228be6] text-white"
-                        : "bg-white border border-[#e9ecef]"
+                        ? "bg-[#20397F] text-white"
+                        : "bg-white border border-[#20397F]"
                     }`}
                   >
-                    {message.text}
+                    <span
+                      className={
+                        message.sender === "user"
+                          ? "text-white"
+                          : "text-[#20397F]"
+                      }
+                    >
+                      {message.text}
+                    </span>
                   </div>
-                  <span className="text-xs text-[#6c757d] px-1">
+                  <span className="text-xs text-[#20397F] px-1">
                     {message.timestamp}
                   </span>
                 </div>
@@ -233,7 +244,7 @@ function CommunityChat() {
           </div>
 
           {/* Message Input */}
-          <div className="p-6 border-t border-[#e9ecef] bg-white">
+          <div className="p-6 border-t border-[#20397F] bg-[#fffbfb]">
             <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto">
               <div className="flex gap-3">
                 <input
@@ -241,11 +252,11 @@ function CommunityChat() {
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder={`Message ${selectedCommunity.name}...`}
-                  className="flex-1 px-4 py-2.5 rounded-md border border-[#e9ecef] bg-white focus:outline-none focus:border-[#228be6]"
+                  className="flex-1 px-4 py-2.5 rounded-md border border-[#20397F] bg-white focus:outline-none focus:border-[#CD6D8B] text-[#20397F]"
                 />
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-[#228be6] text-white rounded-md hover:bg-[#1c7ed6] transition-colors"
+                  className="px-5 py-2.5 bg-[#CD6D8B] text-white rounded-md hover:bg-[#b55a75] transition-colors"
                 >
                   <HiPaperAirplane className="w-5 h-5" />
                 </button>
