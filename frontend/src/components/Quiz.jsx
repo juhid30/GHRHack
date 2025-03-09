@@ -8,12 +8,15 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
-  Upload,
   Loader2,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Navbar from "./Navbar"; // Added Navbar import
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { to } from "@react-spring/web";
+import toast from "react-hot-toast";
 
 const Quiz = () => {
   const [quizState, setQuizState] = useState("start");
@@ -29,7 +32,31 @@ const Quiz = () => {
   const [documentName, setDocumentName] = useState("");
   const [subject, setSubject] = useState("");
   const [year, setYear] = useState("");
+  const [coins, setCoins] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  const updateCoins = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      const userId = user.uid; // Get user ID
+      const coinsRef = doc(db, "coins", userId); // Document reference for user's coins
+      const coinsDoc = await getDoc(coinsRef); // Check if document exists
+
+      if (coinsDoc.exists()) {
+        // If document exists, update the coins
+        setCoins(coinsDoc.data().coins + 2); // Add 10 coins (example increment)
+        await setDoc(
+          coinsRef,
+          { coins: coinsDoc.data().coins + 2 },
+          { merge: true }
+        ); // Update document
+      } else {
+        // If document doesn't exist, create a new one with initial coins
+        await setDoc(coinsRef, { userId, coins: 2 }); // Set initial coin value
+        setCoins(2); // Set initial coins
+      }
+    }
+  };
 
   const toBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -93,13 +120,15 @@ const Quiz = () => {
     }
   };
 
-  const handleAnswerSelect = (selectedOption) => {
+  const handleAnswerSelect = async (selectedOption) => {
     const newUserAnswers = [...userAnswers];
     newUserAnswers[currentQuestion] = selectedOption;
     setUserAnswers(newUserAnswers);
     setShowExplanation(selectedOption !== quizData[currentQuestion].answer);
 
     if (selectedOption === quizData[currentQuestion].answer) {
+      await updateCoins();
+      toast.success("You recived 2 Coins for the Question");
       confetti({
         particleCount: 50,
         spread: 60,
@@ -170,6 +199,13 @@ const Quiz = () => {
     </div>
   );
 
+  /*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * Renders a single question in the quiz with options and a button to proceed.
+   * Also shows the explanation for the question if the user has selected an option.
+   * @returns {JSX.Element} The rendered question component
+   */
+  /******  821f545a-dedf-459c-8fd0-b13ccbb7f1c8  *******/
   const renderQuestion = () => (
     <div className="space-y-6 my-auto flex flex-col justify-center items-center min-h-screen">
       <div className="flex justify-between items-center w-full">

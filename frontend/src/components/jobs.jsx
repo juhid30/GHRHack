@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MapPin, Briefcase, IndianRupee, ExternalLink } from "lucide-react";
-import Navbar from "./Navbar"; // Added Navbar import
+import Navbar from "./Navbar";
 
 export default function JobsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -119,9 +119,15 @@ export default function JobsPage() {
 
   return (
     <>
-      <Navbar /> {/* Added Navbar */}
-      <div className="container mx-auto py-8 px-4 pt-[7rem]"> {/* Added top padding for navbar */}
-        <h1 className="text-3xl font-bold mb-8 text-center text-[#7D5BA6]">
+      <Navbar />
+      <div
+        className="container mx-auto py-8 px-4 pt-[7rem]"
+        style={{ backgroundColor: "#F6D8D1" }}
+      >
+        <h1
+          className="text-3xl font-bold mb-8 text-center"
+          style={{ color: "#20397F" }}
+        >
           Job Listings
         </h1>
 
@@ -132,14 +138,24 @@ export default function JobsPage() {
               placeholder="Search jobs..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 border rounded"
+              style={{
+                borderColor: "#EEB6B3",
+                backgroundColor: "#F6D8D1",
+                color: "#20397F",
+              }}
             />
           </div>
 
           <select
             value={locationFilter}
             onChange={(e) => setLocationFilter(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded"
+            className="w-full p-2 border rounded"
+            style={{
+              borderColor: "#EEB6B3",
+              backgroundColor: "#F6D8D1",
+              color: "#20397F",
+            }}
           >
             <option value="">Filter by location</option>
             <option value="all">All Locations</option>
@@ -153,7 +169,12 @@ export default function JobsPage() {
           <select
             value={skillFilter}
             onChange={(e) => setSkillFilter(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded"
+            className="w-full p-2 border rounded"
+            style={{
+              borderColor: "#EEB6B3",
+              backgroundColor: "#F6D8D1",
+              color: "#20397F",
+            }}
           >
             <option value="">Filter by skill</option>
             <option value="all">All Skills</option>
@@ -171,31 +192,44 @@ export default function JobsPage() {
             filteredJobs.map((job, index) => (
               <div
                 key={index}
-                className="h-full flex flex-col border border-gray-300 rounded-lg shadow-lg"
+                className="h-full flex flex-col border rounded-lg shadow-lg"
+                style={{ borderColor: "#EEB6B3", backgroundColor: "#F6D8D1" }}
               >
-                <div className="p-4">
-                  <h2 className="font-semibold text-xl text-[#7D5BA6]">
+                <div className="p-4" style={{ backgroundColor: "#EEB6B3" }}>
+                  <h2
+                    className="font-semibold text-xl"
+                    style={{ color: "#20397F" }}
+                  >
                     {job.title}
                   </h2>
-                  <p className="text-gray-600 flex items-center gap-1">
+                  <p
+                    className="flex items-center gap-1"
+                    style={{ color: "#000000" }}
+                  >
                     <MapPin className="h-4 w-4" />
                     {job.location}
                   </p>
                 </div>
 
                 <div className="flex-grow p-4">
-                  <p className="mb-4">{job.description}</p>
+                  <p className="mb-4" style={{ color: "#20397F" }}>
+                    {job.description}
+                  </p>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {job.skills.map((skill, i) => (
                       <span
                         key={i}
-                        className="px-2 py-1 text-sm bg-[#55D6BE] text-white rounded-full"
+                        className="px-2 py-1 text-sm rounded-full"
+                        style={{ backgroundColor: "#CD6D8B", color: "#F6D8D1" }}
                       >
                         {skill}
                       </span>
                     ))}
                   </div>
-                  <div className="flex items-center gap-1 text-gray-500">
+                  <div
+                    className="flex items-center gap-1"
+                    style={{ color: "#20397F" }}
+                  >
                     <IndianRupee className="h-4 w-4" />
                     <span>
                       {job.payment.amount.toLocaleString()}{" "}
@@ -205,14 +239,21 @@ export default function JobsPage() {
                   </div>
                 </div>
 
-                <div className="p-4 flex justify-between">
+                <div
+                  className="p-4 flex justify-between"
+                  style={{ backgroundColor: "#EEB6B3" }}
+                >
                   <button
-                    className="px-4 py-2 border border-gray-300 rounded text-[#7D5BA6]"
+                    className="px-4 py-2 border rounded"
+                    style={{ borderColor: "#20397F", color: "#20397F" }}
                     onClick={() => setSelectedJob(job)}
                   >
                     View Details
                   </button>
-                  <button className="px-4 py-2 bg-[#FC6471] text-white rounded">
+                  <button
+                    className="px-4 py-2 rounded"
+                    style={{ backgroundColor: "#20397F", color: "#F6D8D1" }}
+                  >
                     <a
                       href={job.link}
                       target="_blank"
@@ -227,10 +268,10 @@ export default function JobsPage() {
             ))
           ) : (
             <div className="col-span-full text-center py-12">
-              <h3 className="text-xl font-medium text-[#7D5BA6]">
+              <h3 className="text-xl font-medium" style={{ color: "#20397F" }}>
                 No jobs found
               </h3>
-              <p className="text-gray-500 mt-2">
+              <p className="mt-2" style={{ color: "#000000" }}>
                 Try adjusting your search or filters
               </p>
             </div>
@@ -244,20 +285,29 @@ export default function JobsPage() {
             onClick={() => setSelectedJob(null)}
           >
             <div
-              className="bg-white p-6 rounded-lg max-w-lg w-full"
+              className="p-6 rounded-lg max-w-lg w-full"
+              style={{ backgroundColor: "#F6D8D1" }}
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-2xl font-bold text-[#7D5BA6]">
+              <h2 className="text-2xl font-bold" style={{ color: "#20397F" }}>
                 {selectedJob.title}
               </h2>
-              <p className="text-gray-600 flex items-center gap-1">
+              <p
+                className="flex items-center gap-1"
+                style={{ color: "#000000" }}
+              >
                 <MapPin className="h-4 w-4" />
                 {selectedJob.location}
               </p>
 
               <div className="mt-4">
-                <h3 className="font-semibold">Responsibilities</h3>
-                <ul className="list-disc pl-5 space-y-1">
+                <h3 className="font-semibold" style={{ color: "#20397F" }}>
+                  Responsibilities
+                </h3>
+                <ul
+                  className="list-disc pl-5 space-y-1"
+                  style={{ color: "#000000" }}
+                >
                   {selectedJob.responsibilities.map((resp, i) => (
                     <li key={i}>{resp}</li>
                   ))}
@@ -265,12 +315,15 @@ export default function JobsPage() {
               </div>
 
               <div className="mt-4">
-                <h3 className="font-semibold">Required Skills</h3>
+                <h3 className="font-semibold" style={{ color: "#20397F" }}>
+                  Required Skills
+                </h3>
                 <div className="flex flex-wrap gap-2">
                   {selectedJob.skills.map((skill, i) => (
                     <span
                       key={i}
-                      className="px-2 py-1 text-sm bg-[#55D6BE] text-white rounded-full"
+                      className="px-2 py-1 text-sm rounded-full"
+                      style={{ backgroundColor: "#CD6D8B", color: "#F6D8D1" }}
                     >
                       {skill}
                     </span>
@@ -279,8 +332,13 @@ export default function JobsPage() {
               </div>
 
               <div className="mt-4">
-                <h3 className="font-semibold">Compensation</h3>
-                <p className="flex items-center gap-1">
+                <h3 className="font-semibold" style={{ color: "#20397F" }}>
+                  Compensation
+                </h3>
+                <p
+                  className="flex items-center gap-1"
+                  style={{ color: "#000000" }}
+                >
                   <IndianRupee className="h-4 w-4" />
                   <span>
                     {selectedJob.payment.amount.toLocaleString()}{" "}
@@ -290,7 +348,10 @@ export default function JobsPage() {
               </div>
 
               <div className="mt-4 flex justify-end">
-                <button className="px-4 py-2 bg-[#FC6471] text-white rounded">
+                <button
+                  className="px-4 py-2 rounded"
+                  style={{ backgroundColor: "#20397F", color: "#F6D8D1" }}
+                >
                   <a
                     href={selectedJob.link}
                     target="_blank"

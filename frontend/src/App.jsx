@@ -16,6 +16,7 @@ import ProfilePage from "./components/profile";
 import VideoPlayer from "./components/VideoPlayer";
 import InterestAnalyzer from "./components/InterestAnalyzer";
 import JobsPage from "./components/jobs";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
@@ -39,8 +40,9 @@ function App() {
         <Route path="/coding" element={<CodingPlatform />} />
         <Route path="/roadmap" element={<RoadmapGenerator />} />
         <Route path="/extension" element={<InterestAnalyzer />} />
-        <Route path="/jobs" element={< JobsPage/>} />
+        <Route path="/jobs" element={<JobsPage />} />
       </Routes>
+      <Toaster />
     </>
   );
 }

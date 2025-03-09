@@ -21,7 +21,7 @@ const Navbar = () => {
     getUser();
   }, []);
 
-  const menuItems = ["Study", "Community", "Journal", "Calendar"];
+  const menuItems = ["Study", "Community", "Journal", "Resume", "Calendar"];
 
   return (
     <motion.nav

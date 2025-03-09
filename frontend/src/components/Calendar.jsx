@@ -2,14 +2,17 @@ import React, { useEffect, useState } from "react";
 import Fullcalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import timeGridPlugin from "@fullcalendar/timegrid";
 import Navbar from "./Navbar";
+import { FiCalendar, FiUpload, FiX, FiClock } from "react-icons/fi";
 
 export function CalendarComponent() {
   const [events, setEvents] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [hobbies, setHobbies] = useState("");
   const [syllabus, setSyllabus] = useState(null);
-  const [loading, setLoading] = useState(false); // State for loading
+  const [loading, setLoading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     const storedEvents = localStorage.getItem("rawEvents");
@@ -29,8 +32,28 @@ export function CalendarComponent() {
     }
   };
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type === "application/pdf") {
+      setSyllabus(file);
+    } else {
+      alert("Please upload a valid PDF file.");
+    }
+  };
+
   const fetchEventsFromGemini = async () => {
-    setLoading(true); // Set loading to true when the fetch starts
+    setLoading(true);
 
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return alert("User data not found!");
@@ -65,63 +88,80 @@ export function CalendarComponent() {
     } catch (error) {
       console.error("Error fetching events:", error);
     } finally {
-      setLoading(false); // Set loading to false after the fetch is done
+      setLoading(false);
     }
   };
 
   return (
-    <div className="w-full h-full relative bg-purple-50 p-4 rounded-lg">
-      <button
-        onClick={() => setShowPopup(true)}
-        className="mb-4 p-2 bg-purple-600 text-black rounded border border-black hover:text-white hover:bg-black"
-      >
-        Get Events
-      </button>
+    <div className="w-full h-full relative bg-white p-6 rounded-lg shadow-lg">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-4xl font-bold text-[#20397F]">
+          Your Personal Calendar
+        </h1>
+        <button
+          onClick={() => setShowPopup(true)}
+          className="px-6 py-3 bg-[#bf3964] text-[#ffffff] rounded-md font-medium text-lg transition-all duration-300 hover:bg-[#EEB6B3] flex items-center"
+        >
+          <FiCalendar className="w-5 h-5 mr-2" />
+          Generate Events
+        </button>
+      </div>
 
       {showPopup && (
         <div className="fixed top-0 left-0 z-40 w-full h-full flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-          <div className="bg-white p-6 rounded-2xl shadow-2xl w-96">
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">
-              Enter Details
+          <div className="bg-white p-8 rounded-xl shadow-2xl w-[500px] relative">
+            <button
+              onClick={() => setShowPopup(false)}
+              className="absolute top-4 right-4 text-[#20397F] hover:text-[#000000] transition-colors"
+            >
+              <FiX className="w-6 h-6" />
+            </button>
+
+            <h2 className="text-2xl font-semibold text-[#20397F] mb-6">
+              Personalize Your Calendar
             </h2>
 
-            <input
-              type="text"
-              placeholder="Hobbies"
-              className="border p-3 w-full mb-4 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              value={hobbies}
-              onChange={(e) => setHobbies(e.target.value)}
-            />
+            <div className="mb-5">
+              <label className="block text-lg font-medium text-[#20397F] mb-2">
+                Your Hobbies & Interests
+              </label>
+              <input
+                type="text"
+                placeholder="e.g., Reading, Swimming, Coding..."
+                className="border border-[#EEB6B3] p-3 w-full rounded-lg focus:ring-2 focus:ring-[#CD6D8B] focus:border-[#CD6D8B] bg-[#F6D8D1] text-[#20397F] text-lg outline-none"
+                value={hobbies}
+                onChange={(e) => setHobbies(e.target.value)}
+              />
+            </div>
 
-            <div className="flex items-center justify-center w-full mb-4">
-              <label
-                htmlFor="dropzone-file"
-                className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+            <div className="mb-6">
+              <label className="block text-lg font-medium text-[#20397F] mb-2">
+                Upload Your Syllabus
+              </label>
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-[#F6D8D1] transition-colors ${
+                  isDragging
+                    ? "border-[#CD6D8B]"
+                    : "border-[#EEB6B3] hover:border-[#CD6D8B]"
+                }`}
               >
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <svg
-                    className="w-10 h-10 mb-3 text-gray-500"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 16"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                    />
-                  </svg>
-                  <p className="mb-2 text-sm text-gray-500">
+                  <FiUpload className="w-12 h-12 mb-3 text-[#20397F]" />
+                  <p className="mb-2 text-lg text-[#20397F]">
                     {syllabus ? (
-                      <span className="font-semibold">File uploaded</span>
+                      <span className="font-semibold">
+                        File uploaded: {syllabus.name}
+                      </span>
                     ) : (
-                      <span className="font-semibold">Click to upload</span>
+                      <span className="font-semibold">
+                        Click to upload or drag and drop
+                      </span>
                     )}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-base text-[#20397F]">
                     PDF files only (Max: 5MB)
                   </p>
                 </div>
@@ -132,14 +172,15 @@ export function CalendarComponent() {
                   className="hidden"
                   onChange={handleSyllabusUpload}
                 />
-              </label>
+              </div>
             </div>
 
             <button
               onClick={fetchEventsFromGemini}
-              className="w-full p-3 bg-green-600 text-white rounded-lg font-medium transition-all duration-300 hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
+              className="w-full p-4 bg-[#CD6D8B] text-[#20397F] rounded-lg font-medium text-lg transition-all duration-300 hover:bg-[#EEB6B3] focus:outline-none flex items-center justify-center"
             >
-              Submit
+              <FiClock className="w-5 h-5 mr-2" />
+              Generate My Calendar
             </button>
           </div>
         </div>
@@ -148,33 +189,44 @@ export function CalendarComponent() {
       {/* Loading Indicator */}
       {loading && (
         <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div
-            className="spinner-border animate-spin inline-block w-16 h-16 border-4 border-t-transparent border-solid rounded-full text-purple-600"
-            role="status"
-          >
-            <span className="sr-only">Loading...</span>
+          <div className="p-4 bg-white rounded-lg shadow-lg flex flex-col items-center">
+            <div
+              className="spinner-border animate-spin inline-block w-12 h-12 border-4 border-t-transparent border-[#CD6D8B] border-solid rounded-full"
+              role="status"
+            >
+              <span className="sr-only">Loading...</span>
+            </div>
+            <p className="mt-4 text-lg font-medium text-[#20397F]">
+              Creating your personalized schedule...
+            </p>
           </div>
         </div>
       )}
 
-      <Fullcalendar
-        plugins={[dayGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        headerToolbar={{
-          start: "today prev,next",
-          center: "title",
-          end: "dayGridMonth,timeGridWeek,timeGridDay",
-        }}
-        height="100%"
-        events={events}
-        buttonText={{
-          today: "Today",
-          prev: "<",
-          next: ">",
-        }}
-        className="bg-purple-100 text-purple-800"
-        eventColor="#c4b5e4"
-      />
+      <div className="bg-[#fff9f7af] p-6 rounded-lg shadow-md">
+        <Fullcalendar
+          plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+          initialView="dayGridMonth"
+          headerToolbar={{
+            start: "today prev,next",
+            center: "title",
+            end: "dayGridMonth,timeGridWeek,timeGridDay",
+          }}
+          height="700px"
+          events={events}
+          buttonText={{
+            today: "Today",
+            month: "Month",
+            week: "Week",
+            day: "Day",
+          }}
+          eventColor="#CD6D8B"
+          eventTextColor="#ffffff"
+          eventBorderColor="#ffffff"
+          dayMaxEvents={true}
+          themeSystem="standard"
+        />
+      </div>
     </div>
   );
 }
@@ -182,10 +234,20 @@ export function CalendarComponent() {
 function Calendar() {
   return (
     <>
-      {/* Minimal Navbar */}
       <Navbar />
-      <div className="bg-purple-50 w-full h-screen pt-16 p-9 flex">
-        <CalendarComponent />
+      <div className="bg-white w-full min-h-screen pt-24 px-8 pb-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-5xl font-bold text-[#172858] mb-3">
+              Schedule Planner
+            </h1>
+            <p className="text-xl text-[#20397F]">
+              Manage your time effectively with AI-generated schedule based on
+              your interests
+            </p>
+          </div>
+          <CalendarComponent />
+        </div>
       </div>
     </>
   );

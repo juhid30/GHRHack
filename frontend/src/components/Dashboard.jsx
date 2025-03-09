@@ -23,17 +23,17 @@ const PomodoroTimer = ({ duration }) => {
 
   return (
     <motion.div
-      initial={{ scale: 0.5 }}
+      initial={{ scale: 0.95 }}
       animate={{ scale: 1 }}
-      transition={{ duration: 0.5 }}
-      className="flex flex-col items-center justify-center w-full p-6 rounded-xl bg-white shadow-lg border border-gray-300"
+      transition={{ duration: 0.3 }}
+      className="flex flex-col items-center justify-center w-full p-6 rounded-lg bg-[#ffeae5e7] shadow-sm border border-[#EEB6B3]"
     >
-      <h2 className="text-3xl font-semibold text-gray-800">Pomodoro Timer</h2>
-      <p className="text-5xl font-bold my-4 text-gray-900">
+      <h2 className="text-2xl font-medium text-[#20397F]">Focus Timer</h2>
+      <p className="text-6xl font-bold my-6 text-[#20397F]">
         {formatTime(timeLeft)}
       </p>
       <button
-        className="px-6 py-3 mt-4 text-lg font-medium text-white transition-all duration-300 bg-blue-600 rounded-lg shadow-md hover:bg-blue-500 hover:scale-105 active:scale-95"
+        className="px-6 py-2 text-base font-medium text-white transition-all duration-200 bg-[#CD6D8B] rounded-md hover:bg-opacity-90 active:scale-95"
         onClick={() => setIsRunning(!isRunning)}
       >
         {isRunning ? "Pause" : "Start"}
@@ -96,14 +96,21 @@ const EmotionDetector = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 w-full bg-white shadow-lg rounded-xl border border-gray-300">
+    <div className="flex flex-col items-center p-6 w-full bg-[#ffeae5e7] shadow-sm rounded-lg border border-[#EEB6B3]">
+      <h2 className="text-xl font-medium mb-4 text-[#20397F]">
+        Mood Detection
+      </h2>
       <video
         ref={videoRef}
         autoPlay
-        className="border rounded-lg shadow-lg w-[30rem] h-[23rem]"
+        className="border rounded-md shadow-sm w-full max-w-md aspect-video object-cover"
       />
       <canvas ref={canvasRef} className="hidden" />
-      <h2 className="text-xl font-semibold mt-4 text-red-500">{emotion}</h2>
+      <div className="mt-4 py-2 px-4 rounded-md bg-[#EEB6B3] inline-block">
+        <p className="font-medium text-[#20397F]">
+          Current mood: <span className="font-bold">{emotion}</span>
+        </p>
+      </div>
     </div>
   );
 };
@@ -146,32 +153,34 @@ const SpotifyPlayer = () => {
   };
 
   return (
-    <div className="p-6 text-center w-1/3 bg-white shadow-lg rounded-xl border border-gray-300">
-      <h2 className="text-xl font-bold text-gray-800">Spotify Player</h2>
+    <div className="p-6 text-center w-full bg-[#ffeae5e7] shadow-sm rounded-lg border border-[#EEB6B3]">
+      <h2 className="text-xl font-medium text-[#20397F] mb-4">
+        Music Recommendations
+      </h2>
       <button
-        className="bg-green-500 text-white p-3 rounded-lg w-full mt-3 shadow-md hover:bg-green-400 transition-all"
+        className="bg-[#CD6D8B] text-white p-2 rounded-md w-full shadow-sm hover:bg-opacity-90 transition-all"
         onClick={fetchSongs}
       >
-        Get All Songs
+        Refresh Recommendations
       </button>
 
-      {error && <p className="text-red-500 mt-2">{error}</p>}
+      {error && <p className="text-[#20397F] mt-2">{error}</p>}
 
-      <ul className="mt-4 max-h-40 overflow-auto border p-2 rounded bg-gray-100">
+      <div className="mt-4 max-h-48 overflow-auto border border-[#EEB6B3] p-2 rounded-md bg-[#ffeae5e7] bg-opacity-70">
         {tracks.map((track, index) => (
-          <li
+          <div
             key={index}
-            className={`cursor-pointer p-2 border-b ${
+            className={`cursor-pointer p-2 mb-1 rounded-md transition-colors ${
               index === currentTrackIndex
-                ? "bg-green-500 font-bold text-white"
-                : "text-gray-600"
+                ? "bg-[#CD6D8B] font-medium text-white"
+                : "bg-[#EEB6B3] bg-opacity-50 text-[#20397F] hover:bg-opacity-70"
             }`}
             onClick={() => setCurrentTrackIndex(index)}
           >
             {track.recommended_song}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
 
       {tracks.length > 0 && (
         <>
@@ -181,17 +190,17 @@ const SpotifyPlayer = () => {
             height="80"
             frameBorder="0"
             allow="encrypted-media"
-            className="mt-4 rounded-lg"
+            className="mt-4 rounded-md"
           ></iframe>
-          <div className="flex justify-between mt-2">
+          <div className="flex justify-between mt-3">
             <button
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-400 transition-all"
+              className="bg-[#20397F] text-white px-4 py-2 rounded-md shadow-sm hover:bg-opacity-90 transition-all"
               onClick={handlePrev}
             >
               Previous
             </button>
             <button
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-400 transition-all"
+              className="bg-[#20397F] text-white px-4 py-2 rounded-md shadow-sm hover:bg-opacity-90 transition-all"
               onClick={handleNext}
             >
               Next
@@ -205,12 +214,16 @@ const SpotifyPlayer = () => {
 
 const Dashboard = () => {
   return (
-    <div className="flex flex-col items-center h-screen w-full bg-gradient-to-br from-gray-100 to-white text-gray-900">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-[#fffaf8] to-white text-[#20397F]">
       <Navbar />
-      <PomodoroTimer duration={25} />
-      <div className="flex flex-grow w-full p-6 space-x-6">
-        <EmotionDetector />
-        <SpotifyPlayer />
+      <div className="container mx-auto px-4 py-6 flex-grow mt-[5rem]">
+        <div className="max-w-4xl mx-auto mb-6">
+          <PomodoroTimer duration={25} />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <EmotionDetector />
+          <SpotifyPlayer />
+        </div>
       </div>
     </div>
   );
