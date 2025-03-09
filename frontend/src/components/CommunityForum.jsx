@@ -114,12 +114,6 @@ NOTE: THIS MAY BE A FALSE ALARM DUE TO ACCURACY ISSUES, BUT WE DO REQUEST YOU TO
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
-
-    // Check for vulnerable content before sending
-    if (checkMentalHealthIssues(newMessage)) {
-      handleVulnerableContent();
-    }
-
     const communityId = selectedCommunity.id;
     const userMsg = {
       text: newMessage,
