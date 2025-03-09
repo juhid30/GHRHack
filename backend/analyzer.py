@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Blueprint,Flask, request, jsonify
 import fitz  # PyMuPDF
 from PIL import Image
 import base64
@@ -8,10 +8,7 @@ import google.generativeai as genai
 import json
 from flask_cors import CORS
 from dotenv import load_dotenv
-app = Flask(__name__)
-
-CORS(app)
-print(os.getenv("GEMINI_API_KEY"))
+anal_routes = Blueprint("anal_routes", __name__)
 
 # Configure Gemini API (assuming genai is a predefined module)
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -182,7 +179,7 @@ prompt_for_details = """
     }
 """
 
-@app.route('/upload', methods=['POST'])
+@anal_routes.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
         return jsonify({"error": "No file part"})
@@ -209,7 +206,7 @@ def upload_file():
     return jsonify({"response": clean_json_string(response), "details":clean_json_string(details)})
 
 
-@app.route('/upload_text', methods=['POST'])
+@anal_routes.route('/upload_text', methods=['POST'])
 def upload_text():
     # Extract text from the request
     input_text = request.form.get('input_text')
@@ -223,7 +220,7 @@ def upload_text():
     # Return the cleaned and parsed response from the AI
     return jsonify({"response": clean_json_string(response)})
 
-@app.route('/upload_sugg', methods=['POST'])
+@anal_routes.route('/upload_sugg', methods=['POST'])
 def upload_sugg():
     # Extract text from the request
     suggestion = request.form.get('suggestion')

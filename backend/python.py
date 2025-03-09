@@ -3,18 +3,21 @@ import cv2
 import numpy as np
 import pandas as pd
 import requests
-from flask import Flask, request, jsonify
+from flask import Blueprint,Flask, request, jsonify
 from deepface import DeepFace
 from flask_cors import CORS  # Enable CORS
 from dotenv import load_dotenv
 
+# Create a Blueprint for routes in python.py
+python_routes = Blueprint("python_routes", __name__)
+
 # Load environment variables from .env file
 load_dotenv()
 
-app = Flask(__name__)
+# app = Flask(__name__)
 
 # CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})  # Allow your React frontend
-CORS(app)
+# CORS(app)
 
 # Load dataset for song recommendations
 data = pd.read_csv("songs.csv").dropna()
@@ -56,7 +59,7 @@ def search_song_on_spotify(song_name):
         return track_id
     return None
 
-@app.route('/detect_emotion', methods=['POST'])
+@python_routes.route('/detect_emotion', methods=['POST'])
 def detect_emotion():
     try:
         file = request.files['image']
@@ -71,7 +74,7 @@ def detect_emotion():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-@app.route("/recommend", methods=["GET"])
+@python_routes.route("/recommend", methods=["GET"])
 def recommend_and_search():
     emotion = request.args.get("emotion")
     print(emotion)
@@ -106,5 +109,5 @@ def recommend_and_search():
 
     return jsonify(recommend_songs_with_id)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)

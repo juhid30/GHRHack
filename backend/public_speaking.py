@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Blueprint,Flask, request, jsonify
 import numpy as np
 import librosa
 import pickle
@@ -6,15 +6,21 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import os
 import soundfile as sf
-app = Flask(__name__)
+# app = Flask(__name__)
 
-CORS(app, resources={r"/*": {"origins": "*"}})
+# CORS(app, resources={r"/*": {"origins": "*"}})
+pub_speak = Blueprint("pub_speak", __name__)
 
 UPLOAD_FOLDER = 'public/temp'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 # Ensure the folder exists
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
+# UPLOAD_FOLDER = 'public/temp'
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# Ensure the folder exists
+# if not os.path.exists(UPLOAD_FOLDER):
+#     os.makedirs(UPLOAD_FOLDER)
 
 def clear_temp_folder(folder_path):
     """
@@ -30,7 +36,7 @@ def clear_temp_folder(folder_path):
 
 
 # Route to handle saving the audio file
-@app.route('/save-audio', methods=['POST'])
+@pub_speak.route('/save-audio', methods=['POST'])
 def save_audio():
     if 'file' not in request.files:
         return jsonify({'error': 'No file part in the request'}), 400
@@ -42,7 +48,7 @@ def save_audio():
 
     if file:
         filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
         file.save(filepath)  # Save the file locally
 
         return jsonify({'fileUrl': f'/temp/{filename}'})
@@ -127,7 +133,7 @@ def get_prediction(audio_data):
 
 
 
-@app.route('/predict', methods=['POST'])
+@pub_speak.route('/predict', methods=['POST'])
 def predict():
     if 'file' not in request.files:
         return jsonify({'error': 'No file provided'}), 400
@@ -137,7 +143,7 @@ def predict():
         if file:
             # Save the file temporarily in the public/temp folder
             filename = secure_filename(file.filename)
-            temp_filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            temp_filepath = os.path.join(UPLOAD_FOLDER, filename)
             file.save(temp_filepath)  # Save the file to the temp directory
 
             print(f"File saved at: {temp_filepath}")  # Debugging: print the saved file path
@@ -175,7 +181,7 @@ def predict():
         return jsonify({'error': 'Internal server error'}), 500
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
 
 # pip install soundfile audioread
