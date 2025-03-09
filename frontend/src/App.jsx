@@ -12,6 +12,7 @@ import Calendar from "./components/Calendar";
 import Dashboard from "./components/Dashboard";
 import CodingPlatform from "./components/CodingPlatform";
 import LandingPage from "./pages/LandingPage";
+import YogaRedirect from "./components/YogaRedirect";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/public-speaking" element={<VideoPlayer />} />
         {/* <Route path="/emotion" element={<EmotionDetector />} /> */}
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/yoga" element={<YogaRedirect />} />
         <Route path="/resume" element={<ResumeViewer />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/journal" element={<Journal />} />
