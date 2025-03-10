@@ -13,6 +13,7 @@ import {
   FiBarChart2,
   FiStar,
   FiBookOpen,
+  FiHeart,
 } from "react-icons/fi";
 import { Bar, Line } from "react-chartjs-2";
 import {
@@ -30,6 +31,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import Navbar from "./Navbar";
 import { Download } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -556,6 +558,35 @@ export function QuizLineGraph() {
   );
 }
 
+export function LikedArticles() {
+  const navigate = useNavigate();
+  return (
+    <div className="bg-white border border-[#CD6D8B] rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className="p-2 bg-[#CD6D8B] rounded-md">
+            <FiHeart className="h-5 w-5 text-white" />
+          </div>
+          <h2 className="text-xl font-bold text-[#20397F]">
+            Liked Articles & Performance
+          </h2>
+        </div>
+      </div>
+
+      {/* Navigation Button */}
+      <div className="mt-6 flex justify-center">
+        <button
+          onClick={() => navigate("/extension")}
+          className="w-[50%] bg-[#20397F] text-white py-3 rounded-lg font-medium hover:bg-[#CD6D8B] transition-all duration-300"
+        >
+          Go to Extension Page
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // Yoga Performance Bar Graph (Redesigned)
 export function YogaPerformanceGraph() {
   const data = {
@@ -744,6 +775,7 @@ export default function ProfilePage() {
             <div className="lg:col-span-6 space-y-8">
               <ActivityBarGraph />
               <QuizLineGraph />
+              <LikedArticles />{" "}
             </div>
 
             {/* Right Column */}
@@ -751,7 +783,7 @@ export default function ProfilePage() {
               <WeeklyChallenges />
 
               <UpcomingEvents />
-              <YogaPerformanceGraph />
+              {/* <YogaPerformanceGraph /> */}
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { MapPin, Briefcase, IndianRupee, ExternalLink } from "lucide-react";
 import Navbar from "./Navbar";
-
+import { motion } from "framer-motion";
 export default function JobsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
@@ -122,13 +122,13 @@ export default function JobsPage() {
       <Navbar />
       <div
         className="container mx-auto py-8 px-4 pt-[7rem]"
-        style={{ backgroundColor: "#F6D8D1" }}
+        // style={{ backgroundColor: "#F6D8D1" }}
       >
         <h1
           className="text-3xl font-bold mb-8 text-center"
           style={{ color: "#20397F" }}
         >
-          Job Listings
+          Top 5 Job Listings
         </h1>
 
         {/* Search and Filters */}
@@ -141,7 +141,7 @@ export default function JobsPage() {
               className="w-full p-2 border rounded"
               style={{
                 borderColor: "#EEB6B3",
-                backgroundColor: "#F6D8D1",
+                // backgroundColor: "#F6D8D1",
                 color: "#20397F",
               }}
             />
@@ -153,7 +153,7 @@ export default function JobsPage() {
             className="w-full p-2 border rounded"
             style={{
               borderColor: "#EEB6B3",
-              backgroundColor: "#F6D8D1",
+              // backgroundColor: "#F6D8D1",
               color: "#20397F",
             }}
           >
@@ -172,7 +172,7 @@ export default function JobsPage() {
             className="w-full p-2 border rounded"
             style={{
               borderColor: "#EEB6B3",
-              backgroundColor: "#F6D8D1",
+              // backgroundColor: "#F6D8D1",
               color: "#20397F",
             }}
           >
@@ -187,92 +187,74 @@ export default function JobsPage() {
         </div>
 
         {/* Job Cards */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {filteredJobs.length > 0 ? (
             filteredJobs.map((job, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="h-full flex flex-col border rounded-lg shadow-lg"
-                style={{ borderColor: "#EEB6B3", backgroundColor: "#F6D8D1" }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+                className="h-full flex flex-col border border-[#EEB6B3] rounded-2xl shadow-lg overflow-hidden bg-white"
               >
-                <div className="p-4" style={{ backgroundColor: "#EEB6B3" }}>
-                  <h2
-                    className="font-semibold text-xl"
-                    style={{ color: "#20397F" }}
-                  >
-                    {job.title}
-                  </h2>
-                  <p
-                    className="flex items-center gap-1"
-                    style={{ color: "#000000" }}
-                  >
+                {/* Job Title & Location */}
+                <div className="p-5 bg-[#EEB6B3]">
+                  <h2 className="font-bold text-2xl text-white">{job.title}</h2>
+                  <p className="flex items-center gap-2 text-white mt-1">
                     <MapPin className="h-4 w-4" />
                     {job.location}
                   </p>
                 </div>
 
-                <div className="flex-grow p-4">
-                  <p className="mb-4" style={{ color: "#20397F" }}>
-                    {job.description}
-                  </p>
+                {/* Job Description & Skills */}
+                <div className="flex-grow p-5">
+                  <p className="text-[#1c2c59] mb-4">{job.description}</p>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {job.skills.map((skill, i) => (
                       <span
                         key={i}
-                        className="px-2 py-1 text-sm rounded-full"
-                        style={{ backgroundColor: "#CD6D8B", color: "#F6D8D1" }}
+                        className="px-3 py-1 text-sm font-medium rounded-full shadow-sm border border-[#CD6D8B] bg-[#FFEBEC] text-[#CD6D8B]"
                       >
                         {skill}
                       </span>
                     ))}
                   </div>
-                  <div
-                    className="flex items-center gap-1"
-                    style={{ color: "#20397F" }}
-                  >
+                  <div className="flex items-center gap-2 text-[#20397F] font-medium">
                     <IndianRupee className="h-4 w-4" />
                     <span>
                       {job.payment.amount.toLocaleString()}{" "}
-                      {job.payment.currency}
-                      /year
+                      {job.payment.currency}/year
                     </span>
                   </div>
                 </div>
 
-                <div
-                  className="p-4 flex justify-between"
-                  style={{ backgroundColor: "#EEB6B3" }}
-                >
+                {/* Action Buttons */}
+                <div className="p-5 flex justify-between bg-gradient-to-r from-[#EEB6B3] to-[#CD6D8B]">
                   <button
-                    className="px-4 py-2 border rounded"
-                    style={{ borderColor: "#20397F", color: "#20397F" }}
+                    className="px-5 py-2 border-2 border-white text-white rounded-lg font-medium hover:bg-white hover:text-[#CD6D8B] transition-all"
                     onClick={() => setSelectedJob(job)}
                   >
                     View Details
                   </button>
-                  <button
-                    className="px-4 py-2 rounded"
-                    style={{ backgroundColor: "#20397F", color: "#F6D8D1" }}
+                  <a
+                    href={job.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-5 py-2 bg-[#20397F] text-white rounded-lg flex items-center gap-2 shadow-md hover:bg-[#1c2c59] transition-all"
                   >
-                    <a
-                      href={job.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1"
-                    >
-                      Apply <ExternalLink className="h-4 w-4" />
-                    </a>
-                  </button>
+                    Apply <ExternalLink className="h-4 w-4" />
+                  </a>
                 </div>
-              </div>
+              </motion.div>
             ))
           ) : (
-            <div className="col-span-full text-center py-12">
-              <h3 className="text-xl font-medium" style={{ color: "#20397F" }}>
+            <div className="col-span-full text-center py-16">
+              <h3 className="text-2xl font-semibold text-[#20397F]">
                 No jobs found
               </h3>
-              <p className="mt-2" style={{ color: "#000000" }}>
-                Try adjusting your search or filters
+              <p className="mt-2 text-[#000000]">
+                Try adjusting your search or filters.
               </p>
             </div>
           )}
@@ -285,8 +267,8 @@ export default function JobsPage() {
             onClick={() => setSelectedJob(null)}
           >
             <div
-              className="p-6 rounded-lg max-w-lg w-full"
-              style={{ backgroundColor: "#F6D8D1" }}
+              className="p-6 rounded-lg max-w-lg w-full bg-white"
+              // style={{ backgroundColor: "#F6D8D1" }}
               onClick={(e) => e.stopPropagation()}
             >
               <h2 className="text-2xl font-bold" style={{ color: "#20397F" }}>

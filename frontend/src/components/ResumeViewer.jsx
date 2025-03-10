@@ -252,7 +252,7 @@ export default function ResumeViewer() {
           <Transition show={isModalOpen} as={Fragment}>
             <Dialog
               as="div"
-              className="fixed inset-0 z-10 overflow-y-auto"
+              className="fixed inset-0 z-10 overflow-y-auto mt-10"
               onClose={() => setIsModalOpen(false)}
             >
               <div className="min-h-screen px-4 text-center">
@@ -284,7 +284,7 @@ export default function ResumeViewer() {
                   leaveFrom="opacity-100 scale-100"
                   leaveTo="opacity-0 scale-95"
                 >
-                  <div className="inline-block w-full max-w-4xl p-6 my-8 text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
+                  <div className="inline-block w-full max-w-6xl p-6 my-8 text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
                     <div className="flex justify-between items-center mb-6">
                       <Dialog.Title
                         as="h3"
@@ -367,7 +367,7 @@ export default function ResumeViewer() {
                         </h4>
                         {analysisResult ? (
                           <div className="space-y-4">
-                            <div className="bg-[#EEB6B3] p-4 rounded-md border border-[#d85981]">
+                            <div className=" p-4 rounded-md  border-[#d85981]">
                               <h5 className="font-medium text-[#0e162b] mb-2 text-lg">
                                 Profile
                               </h5>
@@ -381,7 +381,7 @@ export default function ResumeViewer() {
                               </p>
                             </div>
 
-                            <div className="bg-[#EEB6B3] p-4 rounded-md border border-[#d85981]">
+                            <div className="bg-[#EEB6B3] p-4 rounded-md">
                               <h5 className="font-medium text-[#0e162b] mb-2 text-lg">
                                 Technical Skills
                               </h5>
@@ -399,21 +399,21 @@ export default function ResumeViewer() {
                               </div>
                             </div>
 
-                            <div className="bg-[#EEB6B3] p-4 rounded-md border border-[#d85981]">
+                            <div className="bg-[#eeb6b372] p-4 rounded-md">
                               <h5 className="font-medium text-[#0e162b] mb-2 text-lg">
                                 Overall Rating
                               </h5>
                               <div className="flex items-center justify-between">
-                                <span className="text-3xl font-bold text-[#0e162b]">
+                                <span className="text-3xl mr-6 font-bold text-[#0e162b]">
                                   {
                                     analysisResult.response.resume_evaluation
                                       .rating.score
                                   }
-                                  /
-                                  {
+                                  {/* / */}
+                                  {/* {
                                     analysisResult.response.resume_evaluation
                                       .rating.max_score
-                                  }
+                                  } */}
                                 </span>
                                 <span className="text-[#0e162b] text-lg">
                                   {

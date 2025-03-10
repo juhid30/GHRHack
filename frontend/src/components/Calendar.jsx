@@ -67,7 +67,7 @@ export function CalendarComponent() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/get-events", {
+      const response = await fetch("http://127.0.0.1:5000/get-events", {
         method: "POST",
         body: formData,
       });
